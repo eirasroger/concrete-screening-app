@@ -1,0 +1,19 @@
+{
+  "XC1": {"max_wc": 0.65, "min_cement": 260, "strength_min_cyl": 20, "strength_min_cube": 25},
+  "XC2": {"max_wc": 0.60, "min_cement": 280, "strength_min_cyl": 25, "strength_min_cube": 30},
+  "XC3": {"max_wc": 0.55, "min_cement": 280, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XC4": {"max_wc": 0.50, "min_cement": 300, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XD1": {"max_wc": 0.55, "min_cement": 300, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XD2": {"max_wc": 0.55, "min_cement": 300, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XD3": {"max_wc": 0.45, "min_cement": 320, "strength_min_cyl": 35, "strength_min_cube": 45},
+  "XS1": {"max_wc": 0.50, "min_cement": 300, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XS2": {"max_wc": 0.45, "min_cement": 320, "strength_min_cyl": 35, "strength_min_cube": 45},
+  "XS3": {"max_wc": 0.45, "min_cement": 340, "strength_min_cyl": 35, "strength_min_cube": 45},
+  "XF1": {"max_wc": 0.55, "min_cement": 300, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XF2": {"max_wc": 0.55, "min_cement": 300, "strength_min_cyl": 25, "strength_min_cube": 30},
+  "XF3": {"max_wc": 0.50, "min_cement": 320, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XF4": {"max_wc": 0.45, "min_cement": 340, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XA1": {"max_wc": 0.55, "min_cement": 300, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XA2": {"max_wc": 0.50, "min_cement": 320, "strength_min_cyl": 30, "strength_min_cube": 37},
+  "XA3": {"max_wc": 0.45, "min_cement": 360, "strength_min_cyl": 35, "strength_min_cube": 45}
+}
