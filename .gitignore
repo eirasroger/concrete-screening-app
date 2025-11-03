@@ -6,8 +6,8 @@ __pycache__/
 .streamlit/secrets.toml
 
 # Temporary data folders
-data/input/
-data/output/
+data/input/*
+data/output/*
 
 # Environment folders
 .venv/
