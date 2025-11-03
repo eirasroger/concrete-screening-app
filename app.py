@@ -1,6 +1,7 @@
 import os
 import sys
 import streamlit as st
+import asyncio
 
 # This block is the key. It adds the project's root directory to the Python path.
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -11,7 +12,7 @@ if project_root not in sys.path:
 from src.frontend.ui_inputs import regulation_selector, custom_info_input, epd_uploader, drawing_uploader
 from src.backend.regulations import list_regulations
 from src.backend.file_handler import save_uploaded_files, clear_io_folders, EPD_INPUT_DIR, EPD_OUTPUT_DIR
-from src.backend.llm_calls import extract_epd_data, save_extraction_result
+from src.backend.llm_calls import extract_epd_data, save_extraction_result, extract_epd_data_async
 
 # --- Session Initialization ---
 if 'initialized' not in st.session_state:
@@ -62,32 +63,39 @@ st.write(f"**Drawing PDFs uploaded:** {st.session_state.saved_drawing_names or '
 st.divider()
 
 # --- Analysis Section ---
-st.header("Engine Analysis")
+
+# We need a small helper function to run our async code from Streamlit's sync environment
+def run_async_analysis(api_key, filenames, input_dir):
+    async def main():
+        tasks = []
+        for filename in filenames:
+            pdf_path = os.path.join(input_dir, filename)
+            # Create a task for each PDF file
+            tasks.append(extract_epd_data_async(api_key, pdf_path))
+        
+        # Run all tasks concurrently and wait for them to complete
+        return await asyncio.gather(*tasks)
+
+    return asyncio.run(main())
+
 if st.button("Run EPD Analysis", disabled=(not st.session_state.saved_epd_names)):
     if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
         st.error("OpenAI API key not found. Please add it to your .streamlit/secrets.toml file.")
     else:
-        st.session_state.analysis_results = {} # Clear previous results
-        api_key = st.secrets["OPENAI_API_KEY"]
-        
-        # --- NEW: Initialize Progress Bar ---
-        progress_bar = st.progress(0, text="Starting analysis...")
-        total_files = len(st.session_state.saved_epd_names)
-        
-        for i, filename in enumerate(st.session_state.saved_epd_names):
-            # --- NEW: Update Progress Bar ---
-            progress_text = f"Analyzing {filename} ({i+1}/{total_files})..."
-            progress_bar.progress((i) / total_files, text=progress_text)
-
-            pdf_path = os.path.join(EPD_INPUT_DIR, filename)
-            result = extract_epd_data(api_key, pdf_path)
-            st.session_state.analysis_results[filename] = result
-            if 'error' not in result:
-                save_extraction_result(result, filename, EPD_OUTPUT_DIR)
-        
-
-        progress_bar.progress(1.0, text="Analysis complete!")
-        st.success("Analysis complete!")
+        with st.spinner("Analyzing all EPDs... This may take a moment."):
+            api_key = st.secrets["OPENAI_API_KEY"]
+            
+            # Run the asynchronous analysis
+            results = run_async_analysis(api_key, st.session_state.saved_epd_names, EPD_INPUT_DIR)
+            
+            # Process the results
+            st.session_state.analysis_results = dict(zip(st.session_state.saved_epd_names, results))
+            
+            for filename, result in st.session_state.analysis_results.items():
+                if 'error' not in result:
+                    save_extraction_result(result, filename, EPD_OUTPUT_DIR)
+            
+            st.success("Analysis complete!")
 
 # --- Results Display ---
 if st.session_state.analysis_results:
