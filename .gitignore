@@ -1,0 +1,15 @@
+# Python cache files
+__pycache__/
+*.pyc
+
+# Streamlit secrets file 
+.streamlit/secrets.toml
+
+# Temporary data folders
+data/input/
+data/output/
+
+# Environment folders
+.venv/
+venv/
+env/
