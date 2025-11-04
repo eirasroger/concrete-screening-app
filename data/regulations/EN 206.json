@@ -15,5 +15,6 @@
   "XF4": {"max_wc": 0.45, "min_cement": 340, "strength_min_cyl": 30, "strength_min_cube": 37},
   "XA1": {"max_wc": 0.55, "min_cement": 300, "strength_min_cyl": 30, "strength_min_cube": 37},
   "XA2": {"max_wc": 0.50, "min_cement": 320, "strength_min_cyl": 30, "strength_min_cube": 37},
-  "XA3": {"max_wc": 0.45, "min_cement": 360, "strength_min_cyl": 35, "strength_min_cube": 45}
+  "XA3": {"max_wc": 0.45, "min_cement": 360, "strength_min_cyl": 35, "strength_min_cube": 45},
+  "X0": {"max_wc": null, "min_cement": null, "strength_min_cyl": 12, "strength_min_cube": 15}
 }

@@ -2,6 +2,7 @@ import os
 import sys
 import streamlit as st
 import asyncio
+import json
 
 project_root = os.path.dirname(os.path.abspath(__file__))
 if project_root not in sys.path:
@@ -12,6 +13,7 @@ from src.frontend.ui_inputs import regulation_selector, custom_info_input, epd_u
 from src.backend.regulations import list_regulations
 from src.backend.file_handler import save_uploaded_files, clear_io_folders, EPD_INPUT_DIR, EPD_OUTPUT_DIR
 from src.backend.llm_calls import extract_epd_data, save_extraction_result, extract_epd_data_async
+from src.backend.compliance_checker import load_regulation_file, get_final_requirements, calculate_epd_metrics, perform_compliance_check
 from src.backend.mapping_processor import load_mapping_file, determine_exposure_classes_with_llm, save_custom_analysis_result
 
 
@@ -48,7 +50,6 @@ with st.sidebar:
         st.rerun()
 
 # --- File Processing Logic ---
-# This single block now handles saving files and updating the session state.
 if epd_files:
     save_uploaded_files(epd_files, file_type='epd')
     st.session_state.saved_epd_names = [f.name for f in epd_files]
@@ -139,7 +140,7 @@ if st.session_state.analysis_results:
 st.subheader("Exposure Results")
 
 if st.session_state.custom_info_result:
-    with st.expander("Custom Scenario Analysis: Exposure Classes", expanded=True): # Renamed expander
+    with st.expander("Custom Scenario Analysis: Exposure Classes", expanded=True): 
         if 'error' in st.session_state.custom_info_result:
             st.error(st.session_state.custom_info_result['error'])
         else:
@@ -154,3 +155,64 @@ if st.session_state.custom_info_result:
             
             # Show the full JSON for transparency
             st.json(st.session_state.custom_info_result)
+
+
+
+
+
+
+st.divider()
+st.header("Final Compliance Assessment")
+
+can_run_compliance = (
+    st.session_state.custom_info_result and 
+    st.session_state.analysis_results and
+    "error" not in st.session_state.custom_info_result
+)
+
+if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
+    exposure_classes = st.session_state.custom_info_result.get("assigned_exposure_classes", [])
+    regulation_data = load_regulation_file(regulation)
+    
+    if "error" in regulation_data:
+        st.error(regulation_data["error"])
+    else:
+        with st.spinner("Performing final compliance checks against all EPDs..."):
+            final_reqs = get_final_requirements(exposure_classes, regulation_data)
+            
+            st.write("#### Aggregated Scenario Requirements (from EN 206)")
+            st.json(final_reqs)
+
+            st.write("#### Compliance Check per EPD")
+            # Loop through the original filenames of the uploaded EPDs
+            for filename in st.session_state.saved_epd_names:
+                with st.expander(f"**Assessment for: {filename}**", expanded=True):
+                    try:
+                        # Construct the path to the output JSON file
+                        json_filename = os.path.splitext(filename)[0] + ".json"
+                        json_filepath = os.path.join(EPD_OUTPUT_DIR, json_filename)
+                        
+                        # Load the full EPD data from the file
+                        with open(json_filepath, 'r') as f:
+                            epd_data = json.load(f)
+                        
+                        # Calculate metrics from the loaded EPD data
+                        epd_metrics = calculate_epd_metrics(epd_data)
+                        st.write("##### Calculated EPD Metrics")
+                        st.json(epd_metrics)
+
+                        # Perform the final pass/fail check
+                        compliance_result = perform_compliance_check(epd_metrics, final_reqs)
+                        st.write("##### Verdict")
+                        if compliance_result["pass"]:
+                            st.success("✅ PASS: This concrete product meets the scenario requirements.")
+                        else:
+                            st.error("❌ FAIL: This concrete product does not meet one or more scenario requirements.")
+                        
+                        for detail in compliance_result["details"]:
+                            st.info(detail)
+
+                    except FileNotFoundError:
+                        st.warning(f"Could not find the analysis result file for {filename}. Please ensure EPD analysis was run successfully.")
+                    except Exception as e:
+                        st.error(f"An error occurred while checking compliance for {filename}: {e}")            
