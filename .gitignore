@@ -5,9 +5,15 @@ __pycache__/
 # Streamlit secrets file 
 .streamlit/secrets.toml
 
-# Temporary data folders
-data/input/*
-data/output/*
+# Ignore all content in the data/input directory...
+data/input/*/*
+# ...but DO NOT ignore the .gitkeep files inside, which preserves the folders
+!data/input/*/.gitkeep
+
+# Ignore all content in the data/output directory...
+data/output/*/*
+# ...but DO NOT ignore the .gitkeep files inside
+!data/output/*/.gitkeep
 
 # Environment folders
 .venv/
