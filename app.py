@@ -15,6 +15,8 @@ from src.backend.file_handler import save_uploaded_files, clear_io_folders, EPD_
 from src.backend.llm_calls import extract_epd_data, save_extraction_result, extract_epd_data_async
 from src.backend.compliance_checker import load_regulation_file, get_final_requirements, calculate_epd_metrics, perform_compliance_check
 from src.backend.mapping_processor import load_mapping_file, determine_exposure_classes_with_llm, save_custom_analysis_result
+from src.backend.custom_constraints_extractor import extract_custom_constraints
+
 
 
 # --- Session Initialization ---
@@ -25,6 +27,11 @@ if 'initialized' not in st.session_state:
     st.session_state.saved_drawing_names = []
     st.session_state.analysis_results = {}
     st.session_state.custom_info_result = None
+    st.session_state.user_constraints = None
+
+if 'user_constraints' not in st.session_state:
+    st.session_state.user_constraints = None 
+
 
 # --- App Layout ---
 st.set_page_config(page_title="Concrete compliance screening", layout="wide")
@@ -69,29 +76,42 @@ st.divider()
 
 col1, col2 = st.columns(2)
 
-with col1:
-    if st.button("Determine Exposure Classes", disabled=(not custom_info)): # Renamed button
-        if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
-            st.error("OpenAI API key not found. Please add it to your .streamlit/secrets.toml file.")
-        else:
-            with st.spinner("Analyzing scenario with LLM..."):
-                api_key = st.secrets["OPENAI_API_KEY"]
-                mapping = load_mapping_file(regulation, "exposure_class")
+# app.py
 
-                # Call the new, correctly named LLM function
-                result = determine_exposure_classes_with_llm(custom_info, mapping, api_key)
+# ... inside the `with col1:` block for the "Determine Exposure Classes" button
+
+with col1:
+    if st.button("Determine Exposure Classes", disabled=(not custom_info)):
+        if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
+            st.error("OpenAI API key not found.")
+        else:
+            with st.spinner("Analyzing custom scenario... (2 steps)"):
+                api_key = st.secrets["OPENAI_API_KEY"]
                 
-                # Store the full result object
+                # --- Step 1: Determine Exposure Class ---
+                st.write("Step 1: Determining exposure classes...")
+                mapping = load_mapping_file(regulation, "exposure_class")
+                exp_class_result = determine_exposure_classes_with_llm(custom_info, mapping, api_key)
+                
                 st.session_state.custom_info_result = {
                     "input_description": custom_info,
-                    **result
+                    **exp_class_result
                 }
                 
-                if 'error' not in result:
-                    save_custom_analysis_result(st.session_state.custom_info_result)
-                    st.success("Exposure class analysis complete!")
+                # --- Step 2: Extract Custom User Constraints ---
+                st.write("Step 2: Extracting user-defined technical constraints...")
+                user_constraints_result = extract_custom_constraints(custom_info, api_key)
+                st.session_state.user_constraints = user_constraints_result
+
+                # Save results if no errors occurred in either call
+                if 'error' not in exp_class_result and 'error' not in user_constraints_result:
+                    st.success("Custom scenario analysis complete!")
                 else:
-                    st.error(result['error'])
+                    if 'error' in exp_class_result:
+                        st.error(f"Exposure Class Error: {exp_class_result['error']}")
+                    if 'error' in user_constraints_result:
+                        st.error(f"Custom Constraint Error: {user_constraints_result['error']}")
+
 
 # We need a small helper function to run our async code from Streamlit's sync environment
 def run_async_analysis(api_key, filenames, input_dir):
@@ -139,6 +159,8 @@ if st.session_state.analysis_results:
 
 st.subheader("Exposure Results")
 
+
+
 if st.session_state.custom_info_result:
     with st.expander("Custom Scenario Analysis: Exposure Classes", expanded=True): 
         if 'error' in st.session_state.custom_info_result:
@@ -157,7 +179,13 @@ if st.session_state.custom_info_result:
             st.json(st.session_state.custom_info_result)
 
 
-
+if st.session_state.user_constraints:
+    with st.expander("User-Defined Technical Constraints", expanded=True):
+        if 'error' in st.session_state.user_constraints:
+            st.error(st.session_state.user_constraints['error'])
+        else:
+            st.write("The following technical constraints were extracted from your custom information:")
+            st.json(st.session_state.user_constraints)
 
 
 
@@ -178,7 +206,8 @@ if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
         st.error(regulation_data["error"])
     else:
         with st.spinner("Performing final compliance checks against all EPDs..."):
-            final_reqs = get_final_requirements(exposure_classes, regulation_data)
+            user_constraints = st.session_state.user_constraints
+            final_reqs = get_final_requirements(exposure_classes, regulation_data, user_constraints)
             
             st.write("#### Aggregated Scenario Requirements (from EN 206)")
             st.json(final_reqs)

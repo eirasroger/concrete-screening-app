@@ -19,10 +19,12 @@ def load_regulation_file(regulation_name: str) -> dict:
     except json.JSONDecodeError:
         return {"error": f"Error decoding JSON from {filepath}"}
 
-def get_final_requirements(exposure_classes: List[str], regulation_data: dict) -> Dict[str, Any]:
+def get_final_requirements(exposure_classes: List[str], regulation_data: dict, user_constraints: dict = None) -> Dict[str, Any]:
     """
-    Aggregates the most stringent requirements from a list of exposure classes.
+    Aggregates requirements from exposure classes AND user constraints,
+    always choosing the more stringent value.
     """
+    # Start with requirements from the regulation
     final_reqs = {
         "max_wc": 0.8,
         "min_cement": 100,
@@ -31,20 +33,38 @@ def get_final_requirements(exposure_classes: List[str], regulation_data: dict) -
     }
 
     if not exposure_classes or "error" in regulation_data or exposure_classes == ["X0"]:
-        return {"message": "No specific exposure classes to derive requirements from."}
-        
-    for ec in exposure_classes:
-        if ec in regulation_data:
-            reqs = regulation_data[ec]
-            if reqs.get("max_wc") is not None:
-                final_reqs["max_wc"] = min(final_reqs["max_wc"], reqs["max_wc"])
-            if reqs.get("min_cement") is not None:
-                final_reqs["min_cement"] = max(final_reqs["min_cement"], reqs["min_cement"])
-            if reqs.get("strength_min_cyl") is not None:
-                final_reqs["strength_min_cyl"] = max(final_reqs["strength_min_cyl"], reqs["strength_min_cyl"])
-            if reqs.get("strength_min_cube") is not None:
-                final_reqs["strength_min_cube"] = max(final_reqs["strength_min_cube"], reqs["strength_min_cube"])
+        # Even if no exposure class, user might have set constraints
+        pass
+    else:
+        for ec in exposure_classes:
+            if ec in regulation_data:
+                reqs = regulation_data[ec]
+                if reqs.get("max_wc") is not None:
+                    final_reqs["max_wc"] = min(final_reqs["max_wc"], reqs["max_wc"])
+                if reqs.get("min_cement") is not None:
+                    final_reqs["min_cement"] = max(final_reqs["min_cement"], reqs["min_cement"])
+                if reqs.get("strength_min_cyl") is not None:
+                    final_reqs["strength_min_cyl"] = max(final_reqs["strength_min_cyl"], reqs["strength_min_cyl"])
+                if reqs.get("strength_min_cube") is not None:
+                    final_reqs["strength_min_cube"] = max(final_reqs["strength_min_cube"], reqs["strength_min_cube"])
 
+    # --- Override with more stringent user constraints ---
+    if user_constraints:
+        # User wants a lower max w/c ratio
+        user_max_wc = user_constraints.get("max_w_c_ratio")
+        if user_max_wc is not None:
+            final_reqs["max_wc"] = min(final_reqs["max_wc"], user_max_wc)
+        
+        # User wants a higher min cement content
+        user_min_cement = user_constraints.get("min_cement_content")
+        if user_min_cement is not None:
+            final_reqs["min_cement"] = max(final_reqs["min_cement"], user_min_cement)
+            
+        # User wants a higher strength (compare against cylinder strength by default)
+        user_min_mpa = user_constraints.get("min_mpa_strength")
+        if user_min_mpa is not None:
+            final_reqs["strength_min_cyl"] = max(final_reqs["strength_min_cyl"], user_min_mpa)
+    
     return final_reqs
 
 def calculate_epd_metrics(epd_data: dict) -> Dict[str, Any]:
@@ -58,7 +78,7 @@ def calculate_epd_metrics(epd_data: dict) -> Dict[str, Any]:
     }
     
     # Extract top-level properties
-    density = epd_data.get("density") # Assumes density is in kg/m3
+    density = epd_data.get("density")
     strength = epd_data.get("MPa")
     
     # Extract material composition from the list of dictionaries

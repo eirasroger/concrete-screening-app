@@ -14,6 +14,7 @@ EPD_INPUT_DIR = os.path.join(INPUT_DIR, 'epds')
 DRAWING_INPUT_DIR = os.path.join(INPUT_DIR, 'drawings')
 EPD_OUTPUT_DIR = os.path.join(OUTPUT_DIR, 'epds')
 CUSTOM_INFO_INPUT_DIR = os.path.join(INPUT_DIR, 'custom_information') 
+CUSTOM_INFO_OUTPUT_DIR = os.path.join(OUTPUT_DIR, 'custom_information')
 
 def save_uploaded_files(uploaded_files: List[st.runtime.uploaded_file_manager.UploadedFile], file_type: str) -> List[str]:
     """Saves uploaded files to the correct sub-directory (epds or drawings)."""
@@ -47,13 +48,38 @@ def save_custom_text(text_content: str, filename: str = "custom_scenario.txt") -
         f.write(text_content)
     return file_path
 
+
 def clear_io_folders():
-    """Deletes and recreates the input and output folders to ensure a clean state."""
-    for folder in [INPUT_DIR, OUTPUT_DIR]:
-        if os.path.exists(folder):
-            shutil.rmtree(folder)
-        os.makedirs(folder, exist_ok=True)
-        # Recreate all necessary subdirectories
-        os.makedirs(os.path.join(folder, 'epds'), exist_ok=True)
-        os.makedirs(os.path.join(folder, 'drawings'), exist_ok=True)
-        os.makedirs(os.path.join(folder, 'custom_information'), exist_ok=True)
+    """
+    Clears the contents of the input and output subdirectories without deleting
+    the directories themselves or their .gitkeep files.
+    """
+    # List of all directories that need to be cleared
+    dirs_to_clear = [
+        EPD_INPUT_DIR, DRAWING_INPUT_DIR, CUSTOM_INFO_INPUT_DIR,
+        EPD_OUTPUT_DIR, os.path.join(OUTPUT_DIR, 'drawings'), CUSTOM_INFO_OUTPUT_DIR
+    ]
+
+    for folder in dirs_to_clear:
+        # Ensure the directory exists before trying to clear it
+        if not os.path.exists(folder):
+            os.makedirs(folder, exist_ok=True)
+            # If we just created it, no need to clear anything
+            continue
+
+        # Iterate through all items in the folder
+        for filename in os.listdir(folder):
+            # Skip the .gitkeep file
+            if filename == ".gitkeep":
+                continue
+
+            file_path = os.path.join(folder, filename)
+            try:
+                # Check if it's a directory and remove it recursively
+                if os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+                # Check if it's a file and remove it
+                elif os.path.isfile(file_path):
+                    os.remove(file_path)
+            except Exception as e:
+                print(f"Failed to delete {file_path}. Reason: {e}")
