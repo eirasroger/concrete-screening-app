@@ -13,6 +13,7 @@ OUTPUT_DIR = os.path.join(BASE_DIR, 'data', 'output')
 EPD_INPUT_DIR = os.path.join(INPUT_DIR, 'epds')
 DRAWING_INPUT_DIR = os.path.join(INPUT_DIR, 'drawings')
 EPD_OUTPUT_DIR = os.path.join(OUTPUT_DIR, 'epds')
+CUSTOM_INFO_INPUT_DIR = os.path.join(INPUT_DIR, 'custom_information') 
 
 def save_uploaded_files(uploaded_files: List[st.runtime.uploaded_file_manager.UploadedFile], file_type: str) -> List[str]:
     """Saves uploaded files to the correct sub-directory (epds or drawings)."""
@@ -36,12 +37,23 @@ def save_uploaded_files(uploaded_files: List[st.runtime.uploaded_file_manager.Up
     
     return saved_file_paths
 
+def save_custom_text(text_content: str, filename: str = "custom_scenario.txt") -> str:
+    """Saves custom text information to its designated folder."""
+    if not os.path.exists(CUSTOM_INFO_INPUT_DIR):
+        os.makedirs(CUSTOM_INFO_INPUT_DIR, exist_ok=True)
+    
+    file_path = os.path.join(CUSTOM_INFO_INPUT_DIR, filename)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(text_content)
+    return file_path
+
 def clear_io_folders():
     """Deletes and recreates the input and output folders to ensure a clean state."""
     for folder in [INPUT_DIR, OUTPUT_DIR]:
         if os.path.exists(folder):
             shutil.rmtree(folder)
         os.makedirs(folder, exist_ok=True)
-        # Recreate subdirectories
+        # Recreate all necessary subdirectories
         os.makedirs(os.path.join(folder, 'epds'), exist_ok=True)
         os.makedirs(os.path.join(folder, 'drawings'), exist_ok=True)
+        os.makedirs(os.path.join(folder, 'custom_information'), exist_ok=True)

@@ -1,0 +1,19 @@
+{
+  "XC1": [{"descr_env": "Dry or permanently wet","inf_ex":"Concrete inside buildings with low air humidity; Concrete permanently submerged in water"}],
+  "XC2": [{"descr_env": "Wet, rarely dry","inf_ex":"Concrete surfaces subject to long-term water contact; Many foundations"}],
+  "XC3": [{"descr_env": "Moderate humidity","inf_ex":"Concrete inside buildings with moderate or high air humidity; External concrete sheltered from rain"}],
+  "XC4": [{"descr_env": "Cyclic wet and dry","inf_ex":"Concrete surfaces subject to water contact, not within exposure class XC2"}],
+  "XD1": [{"descr_env": "Moderate humidity","inf_ex":"Concrete surfaces exposed to airborne chlorides"}],
+  "XD2": [{"descr_env": "Wet, rarely dry","inf_ex":"Swimming pools; Concrete exposed to industrial waters containing chlorides"}],
+  "XD3": [{"descr_env": "Cyclic wet and dry","inf_ex":"Parts of bridges exposed to spray containing chlorides. Pavements, Car park slabs"}],
+  "XS1": [{"descr_env": "Exposed to airborne salt but not in direct contact with sea water","inf_ex":"Structures near to or on the coast"}],
+  "XS2": [{"descr_env": "Permanently submerged","inf_ex":"Parts of marine structures"}],
+  "XS3": [{"descr_env": "Tidal, splash and spray zones","inf_ex":"Parts of marine structures"}],
+  "XF1": [{"descr_env": "Moderate water saturation, without de-icing agent","inf_ex":"Vertical concrete surfaces exposed to rain and freezing"}],
+  "XF2": [{"descr_env": "Moderate water saturation, with de-icing agent","inf_ex":"Vertical concrete surfaces of road structures exposed to freezing and airborne de-icing agents"}],
+  "XF3": [{"descr_env": "High water saturation, without de-icing agent","inf_ex":"Horizontal concrete surfaces exposed to rain and freezing"}],
+  "XF4": [{"descr_env": "High water saturation, with de-icing agent or sea water","inf_ex":"Road and bridge decks exposed to de-icing agents; Concrete surfaces exposed to direct spray containing de-icing agents and freezing; Splash zones of marine structures exposed to freezing"}],
+  "XA1": [{"descr_env": "Slightly aggressive chemical environment","inf_ex":"na"}],
+  "XA2": [{"descr_env": "Moderately aggressive chemical environment","inf_ex":"na"}],
+  "XA3": [{"descr_env": "Highly aggressive chemical environment","inf_ex":"na"}]
+}

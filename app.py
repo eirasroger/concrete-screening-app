@@ -3,16 +3,17 @@ import sys
 import streamlit as st
 import asyncio
 
-# This block is the key. It adds the project's root directory to the Python path.
 project_root = os.path.dirname(os.path.abspath(__file__))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# Now Python can find the 'src' package.
+# --- Imports ---
 from src.frontend.ui_inputs import regulation_selector, custom_info_input, epd_uploader, drawing_uploader
 from src.backend.regulations import list_regulations
 from src.backend.file_handler import save_uploaded_files, clear_io_folders, EPD_INPUT_DIR, EPD_OUTPUT_DIR
 from src.backend.llm_calls import extract_epd_data, save_extraction_result, extract_epd_data_async
+from src.backend.mapping_processor import load_mapping_file, determine_exposure_classes_with_llm, save_custom_analysis_result
+
 
 # --- Session Initialization ---
 if 'initialized' not in st.session_state:
@@ -21,6 +22,7 @@ if 'initialized' not in st.session_state:
     st.session_state.saved_epd_names = []
     st.session_state.saved_drawing_names = []
     st.session_state.analysis_results = {}
+    st.session_state.custom_info_result = None
 
 # --- App Layout ---
 st.set_page_config(page_title="Concrete compliance screening", layout="wide")
@@ -63,6 +65,32 @@ st.write(f"**Drawing PDFs uploaded:** {st.session_state.saved_drawing_names or '
 st.divider()
 
 # --- Analysis Section ---
+
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("Determine Exposure Classes", disabled=(not custom_info)): # Renamed button
+        if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
+            st.error("OpenAI API key not found. Please add it to your .streamlit/secrets.toml file.")
+        else:
+            with st.spinner("Analyzing scenario with LLM..."):
+                api_key = st.secrets["OPENAI_API_KEY"]
+                mapping = load_mapping_file(regulation, "exposure_class")
+
+                # Call the new, correctly named LLM function
+                result = determine_exposure_classes_with_llm(custom_info, mapping, api_key)
+                
+                # Store the full result object
+                st.session_state.custom_info_result = {
+                    "input_description": custom_info,
+                    **result
+                }
+                
+                if 'error' not in result:
+                    save_custom_analysis_result(st.session_state.custom_info_result)
+                    st.success("Exposure class analysis complete!")
+                else:
+                    st.error(result['error'])
 
 # We need a small helper function to run our async code from Streamlit's sync environment
 def run_async_analysis(api_key, filenames, input_dir):
@@ -107,3 +135,22 @@ if st.session_state.analysis_results:
             else:
                 st.json(result)
 
+
+st.subheader("Exposure Results")
+
+if st.session_state.custom_info_result:
+    with st.expander("Custom Scenario Analysis: Exposure Classes", expanded=True): # Renamed expander
+        if 'error' in st.session_state.custom_info_result:
+            st.error(st.session_state.custom_info_result['error'])
+        else:
+            st.write("Based on the provided description, the LLM determined the following classes:")
+            
+            # Display the result list, or a message if it's empty
+            classes = st.session_state.custom_info_result.get("assigned_exposure_classes", [])
+            if classes:
+                st.info(f"**Assigned Classes:** `{', '.join(classes)}`")
+            else:
+                st.warning("No specific exposure classes could be determined from the description.")
+            
+            # Show the full JSON for transparency
+            st.json(st.session_state.custom_info_result)
