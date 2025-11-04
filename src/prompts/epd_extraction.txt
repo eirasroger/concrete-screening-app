@@ -20,6 +20,8 @@ You are an expert data extraction bot specialized in Environmental Product Decla
     3.  **If still not found**, check if a strength value is part of the product's name in the title.
     4.  Return only the final integer value.
 
+-   `max_aggregate_size` (number): Find the maximum aggregate size in millimeters (mm). First, look for an explicit declaration in the EPD text, such as "maximum aggregate size of 31.5 mm". If not found, check the product's commercial name for a "D-number" like "D25", which indicates a 25 mm maximum size. If neither is found, return null for this feature.
+
 -   `mat_comp` (array of objects):
     1.  Find the material composition table (e.g., under "Material Content").
     2.  If the values are already in percentages (%), use them directly.
@@ -31,6 +33,7 @@ You are an expert data extraction bot specialized in Environmental Product Decla
 "EPD_name": "ECOPact C16/20 Ready-mix Concrete",
 "density": 2300,
 "MPa": 20,
+"max_aggregate_size": 20,
 "mat_comp": [
 {{"name": "Cement", "percentage": 12.1}},
 {{"name": "Water", "percentage": 6.8}},
