@@ -16,6 +16,9 @@ from src.backend.llm_calls import extract_epd_data, save_extraction_result, extr
 from src.backend.compliance_checker import load_regulation_file, get_final_requirements, calculate_epd_metrics, perform_compliance_check
 from src.backend.mapping_processor import load_mapping_file, determine_exposure_classes_with_llm, save_custom_analysis_result
 from src.backend.custom_constraints_extractor import extract_custom_constraints
+from src.backend.drawing_processor import analyze_drawing_with_context
+from src.backend.file_handler import DRAWING_INPUT_DIR 
+
 
 
 
@@ -31,7 +34,8 @@ if 'initialized' not in st.session_state:
 
 if 'user_constraints' not in st.session_state:
     st.session_state.user_constraints = None 
-
+if 'drawing_analysis_results' not in st.session_state:
+    st.session_state.drawing_analysis_results = {}
 
 # --- App Layout ---
 st.set_page_config(page_title="Concrete compliance screening", layout="wide")
@@ -76,7 +80,7 @@ st.divider()
 
 col1, col2 = st.columns(2)
 
-# app.py
+
 
 # ... inside the `with col1:` block for the "Determine Exposure Classes" button
 
@@ -189,8 +193,62 @@ if st.session_state.user_constraints:
 
 
 
+# --- Drawing Analysis Section ---
+st.divider()
+st.header("Drawing Analysis")
+
+can_analyze_drawings = st.session_state.saved_drawing_names and st.session_state.custom_info_result
+
+if st.button("Analyze Drawings with Context", disabled=(not can_analyze_drawings)):
+    if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
+        st.error("OpenAI API key not found.")
+    else:
+        with st.spinner("Analyzing drawings... This can take a while."):
+            api_key = st.secrets["OPENAI_API_KEY"]
+            custom_info = st.session_state.custom_info_result['input_description']
+            prelim_classes = st.session_state.custom_info_result['assigned_exposure_classes']
+            
+            # This will store results for each drawing
+            all_drawing_results = {}
+
+            for drawing_name in st.session_state.saved_drawing_names:
+                st.write(f"Processing: {drawing_name}...")
+                drawing_path = os.path.join(DRAWING_INPUT_DIR, drawing_name)
+                
+                result = analyze_drawing_with_context(
+                    api_key=api_key,
+                    drawing_path=drawing_path,
+                    custom_info=custom_info,
+                    preliminary_classes=prelim_classes
+                )
+                all_drawing_results[drawing_name] = result
+
+            st.session_state.drawing_analysis_results = all_drawing_results
+            st.success("Drawing analysis complete!")
+
+# Display drawing analysis results
+if st.session_state.drawing_analysis_results:
+    st.subheader("Drawing Analysis Results")
+    for filename, result in st.session_state.drawing_analysis_results.items():
+        with st.expander(f"Results for: **{filename}**"):
+            if 'error' in result:
+                st.error(f"Could not process file: {result['error']}")
+            else:
+                st.json(result)
+
+
+
+
+
+
+
+
+
+
+
 st.divider()
 st.header("Final Compliance Assessment")
+
 
 can_run_compliance = (
     st.session_state.custom_info_result and 
@@ -199,17 +257,27 @@ can_run_compliance = (
 )
 
 if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
+    # Get all necessary data from session state
     exposure_classes = st.session_state.custom_info_result.get("assigned_exposure_classes", [])
+    user_constraints = st.session_state.user_constraints
+    drawing_reqs = next(iter(st.session_state.drawing_analysis_results.values()), None)
+
+    # Load the main regulation file
     regulation_data = load_regulation_file(regulation)
     
     if "error" in regulation_data:
         st.error(regulation_data["error"])
     else:
         with st.spinner("Performing final compliance checks against all EPDs..."):
-            user_constraints = st.session_state.user_constraints
-            final_reqs = get_final_requirements(exposure_classes, regulation_data, user_constraints)
+            # Determine the final, most stringent requirements from all sources
+            final_reqs = get_final_requirements(
+                exposure_classes, 
+                regulation_data, 
+                user_constraints,
+                drawing_reqs
+            )
             
-            st.write("#### Aggregated Scenario Requirements (from EN 206)")
+            st.write("#### Aggregated Scenario Requirements")
             st.json(final_reqs)
 
             st.write("#### Compliance Check per EPD")
@@ -217,20 +285,20 @@ if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
             for filename in st.session_state.saved_epd_names:
                 with st.expander(f"**Assessment for: {filename}**", expanded=True):
                     try:
-                        # Construct the path to the output JSON file
+                        # Construct the path to the output JSON file for the current EPD
                         json_filename = os.path.splitext(filename)[0] + ".json"
                         json_filepath = os.path.join(EPD_OUTPUT_DIR, json_filename)
                         
-                        # Load the full EPD data from the file
+                        # Load the full EPD data from its JSON file
                         with open(json_filepath, 'r') as f:
                             epd_data = json.load(f)
                         
-                        # Calculate metrics from the loaded EPD data
+                        # Calculate metrics FROM THE LOADED EPD DATA
                         epd_metrics = calculate_epd_metrics(epd_data)
                         st.write("##### Calculated EPD Metrics")
                         st.json(epd_metrics)
 
-                        # Perform the final pass/fail check
+                        # Perform the final pass/fail check with the correct metrics
                         compliance_result = perform_compliance_check(epd_metrics, final_reqs)
                         st.write("##### Verdict")
                         if compliance_result["pass"]:
@@ -238,10 +306,11 @@ if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
                         else:
                             st.error("❌ FAIL: This concrete product does not meet one or more scenario requirements.")
                         
+                        # Display all the details from the check
                         for detail in compliance_result["details"]:
                             st.info(detail)
 
                     except FileNotFoundError:
                         st.warning(f"Could not find the analysis result file for {filename}. Please ensure EPD analysis was run successfully.")
                     except Exception as e:
-                        st.error(f"An error occurred while checking compliance for {filename}: {e}")            
+                        st.error(f"An error occurred while checking compliance for {filename}: {e}")
