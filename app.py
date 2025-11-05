@@ -85,7 +85,7 @@ col1, col2 = st.columns(2)
 # ... inside the `with col1:` block for the "Determine Exposure Classes" button
 
 with col1:
-    if st.button("Determine Exposure Classes", disabled=(not custom_info)):
+    if st.button("Determine user-induced requirements", disabled=(not custom_info)):
         if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
             st.error("OpenAI API key not found.")
         else:
@@ -112,9 +112,9 @@ with col1:
                     st.success("Custom scenario analysis complete!")
                 else:
                     if 'error' in exp_class_result:
-                        st.error(f"Exposure Class Error: {exp_class_result['error']}")
+                        st.error(f"Exposure class error: {exp_class_result['error']}")
                     if 'error' in user_constraints_result:
-                        st.error(f"Custom Constraint Error: {user_constraints_result['error']}")
+                        st.error(f"Custom constraint error: {user_constraints_result['error']}")
 
 
 # We need a small helper function to run our async code from Streamlit's sync environment
@@ -131,7 +131,7 @@ def run_async_analysis(api_key, filenames, input_dir):
 
     return asyncio.run(main())
 
-if st.button("Run EPD Analysis", disabled=(not st.session_state.saved_epd_names)):
+if st.button("Run EPD data extraction", disabled=(not st.session_state.saved_epd_names)):
     if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
         st.error("OpenAI API key not found. Please add it to your .streamlit/secrets.toml file.")
     else:
@@ -148,11 +148,11 @@ if st.button("Run EPD Analysis", disabled=(not st.session_state.saved_epd_names)
                 if 'error' not in result:
                     save_extraction_result(result, filename, EPD_OUTPUT_DIR)
             
-            st.success("Analysis complete!")
+            st.success("Data extraction complete!")
 
 # --- Results Display ---
 if st.session_state.analysis_results:
-    st.subheader("Extraction Results")
+    st.subheader("Extraction results")
     for filename, result in st.session_state.analysis_results.items():
         with st.expander(f"Results for: **{filename}**"):
             if 'error' in result:
@@ -161,12 +161,12 @@ if st.session_state.analysis_results:
                 st.json(result)
 
 
-st.subheader("Exposure Results")
+st.subheader("User-induced requirement results")
 
 
 
 if st.session_state.custom_info_result:
-    with st.expander("Custom Scenario Analysis: Exposure Classes", expanded=True): 
+    with st.expander("Custom scenario analysis: Exposure classes", expanded=True): 
         if 'error' in st.session_state.custom_info_result:
             st.error(st.session_state.custom_info_result['error'])
         else:
@@ -175,7 +175,7 @@ if st.session_state.custom_info_result:
             # Display the result list, or a message if it's empty
             classes = st.session_state.custom_info_result.get("assigned_exposure_classes", [])
             if classes:
-                st.info(f"**Assigned Classes:** `{', '.join(classes)}`")
+                st.info(f"**Assigned classes:** `{', '.join(classes)}`")
             else:
                 st.warning("No specific exposure classes could be determined from the description.")
             
@@ -184,7 +184,7 @@ if st.session_state.custom_info_result:
 
 
 if st.session_state.user_constraints:
-    with st.expander("User-Defined Technical Constraints", expanded=True):
+    with st.expander("User-defined technical constraints", expanded=True):
         if 'error' in st.session_state.user_constraints:
             st.error(st.session_state.user_constraints['error'])
         else:
@@ -195,11 +195,11 @@ if st.session_state.user_constraints:
 
 # --- Drawing Analysis Section ---
 st.divider()
-st.header("Drawing Analysis")
+st.header("Drawing requirement analysis based on user-provided context")
 
 can_analyze_drawings = st.session_state.saved_drawing_names and st.session_state.custom_info_result
 
-if st.button("Analyze Drawings with Context", disabled=(not can_analyze_drawings)):
+if st.button("Analyze drawings with context", disabled=(not can_analyze_drawings)):
     if "OPENAI_API_KEY" not in st.secrets or not st.secrets["OPENAI_API_KEY"]:
         st.error("OpenAI API key not found.")
     else:
@@ -228,7 +228,7 @@ if st.button("Analyze Drawings with Context", disabled=(not can_analyze_drawings
 
 # Display drawing analysis results
 if st.session_state.drawing_analysis_results:
-    st.subheader("Drawing Analysis Results")
+    st.subheader("Drawing analysis results")
     for filename, result in st.session_state.drawing_analysis_results.items():
         with st.expander(f"Results for: **{filename}**"):
             if 'error' in result:
@@ -247,7 +247,7 @@ if st.session_state.drawing_analysis_results:
 
 
 st.divider()
-st.header("Final Compliance Assessment")
+st.header("Final compliance assessment")
 
 
 can_run_compliance = (
@@ -256,7 +256,7 @@ can_run_compliance = (
     "error" not in st.session_state.custom_info_result
 )
 
-if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
+if st.button("Run full compliance check", disabled=(not can_run_compliance)):
     # Get all necessary data from session state
     exposure_classes = st.session_state.custom_info_result.get("assigned_exposure_classes", [])
     user_constraints = st.session_state.user_constraints
@@ -277,10 +277,10 @@ if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
                 drawing_reqs
             )
             
-            st.write("#### Aggregated Scenario Requirements")
+            st.write("#### Aggregated scenario requirements")
             st.json(final_reqs)
 
-            st.write("#### Compliance Check per EPD")
+            st.write("#### Compliance check per EPD")
             # Loop through the original filenames of the uploaded EPDs
             for filename in st.session_state.saved_epd_names:
                 with st.expander(f"**Assessment for: {filename}**", expanded=True):
@@ -295,7 +295,7 @@ if st.button("Run Full Compliance Check", disabled=(not can_run_compliance)):
                         
                         # Calculate metrics FROM THE LOADED EPD DATA
                         epd_metrics = calculate_epd_metrics(epd_data)
-                        st.write("##### Calculated EPD Metrics")
+                        st.write("##### Calculated EPD metrics")
                         st.json(epd_metrics)
 
                         # Perform the final pass/fail check with the correct metrics

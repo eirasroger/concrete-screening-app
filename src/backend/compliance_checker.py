@@ -104,8 +104,8 @@ def calculate_epd_metrics(epd_data: dict) -> Dict[str, Any]:
         name_lower = material.get("name", "").lower()
         percentage = material.get("percentage", 0)
         
-        if "water" in name_lower: water_mass_percent += percentage
-        elif "cement" in name_lower: cement_mass_percent += percentage
+        if "water" in name_lower or "agua" in name_lower: water_mass_percent += percentage
+        elif "cement" in name_lower or "cem " in name_lower: cement_mass_percent += percentage
 
     if cement_mass_percent > 0:
         metrics["calculated_wc"] = water_mass_percent / cement_mass_percent
