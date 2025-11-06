@@ -17,7 +17,7 @@ The system synthesises this information to create a comprehensive screening scen
 - **LLM-powered data extraction:** Automatically parses PDF documents to extract structured technical data, such as material composition, water-to-cement ratios, and characteristic strength.
 - **Dynamic compliance engine:** Evaluates concrete products against a consolidated set of the most stringent requirements from all available data sources.
 - **Jurisdiction-specific analysis:** Adapts the screening process based on user-selected regulatory schemas (e.g., EN 206 vs. AS 3600).
-- **Conflict resolution:** Automatically prioritises mandatory regulatory requirements over user inputs to ensure robust and error-free compliance checks.
+- **Conflict resolution:** The engine ensures compliance by always adopting the most stringent requirement. If a user's input is stricter than the regulatory standard, the user's value prevails. Conversely, mandatory regulatory minimums are always enforced, even if a user suggests a less stringent value.
 - **Interactive UI:** A user-friendly interface built with Streamlit for easy document uploads, requirement definition, and results visualisation.
 
 ## Getting Started
@@ -56,18 +56,18 @@ Follow these steps to get a local copy up and running.
     streamlit run app.py
     ```
 
+
 ## Repository Structure
-
-
+```
 .
 ├── .gitignore # Specifies intentionally untracked files to ignore
 ├── README.md # This file
 ├── app.py # The main Streamlit application entry point
 ├── requirements.txt # Python package dependencies
-|
+│
 ├── .streamlit/
 │ └── secrets.toml # Configuration for API keys and other secrets
-|
+│
 ├── data/ # Contains all project data, organised by type
 │ ├── input/
 │ │ ├── custom_information/ # Folder for user-defined text requirements
@@ -76,7 +76,7 @@ Follow these steps to get a local copy up and running.
 │ │
 │ ├── mappings/
 │ │ ├── en206_exposure_class_mapping.json
-│ │ └── as3600_exposure_class_mapping.json 
+│ │ └── as3600_exposure_class_mapping.json
 │ │
 │ ├── output/
 │ │ ├── custom_information/ # Stores extracted data from custom info
@@ -85,8 +85,8 @@ Follow these steps to get a local copy up and running.
 │ │
 │ └── regulations/
 │ ├── EN_206.json
-│ └── AS_3600.json 
-|
+│ └── AS_3600.json
+│
 └── src/ # All source code for the application
 ├── engine/ # Core logic for the compliance engine
 │ ├── compliance_checker.py
@@ -103,3 +103,28 @@ Follow these steps to get a local copy up and running.
 │
 └── UI/ # Modules related to the Streamlit user interface
 └── ui_inputs.py
+```
+
+
+## Use Cases
+
+This engine is designed to be flexible and can be adapted to several common industry scenarios:
+
+-   **Scenario 1: Preliminary product screening**
+    An engineer has a list of potential concrete suppliers for a new project. They can quickly upload all supplier EPDs and screen them against the default regulatory schema (e.g., EN 206) to create a shortlist of compliant products for a standard application, like an indoor column.
+
+-   **Scenario 2: Detailed design compliance**
+    A structural engineer is designing a foundation for a building in a coastal area. They upload the relevant EPDs, a technical drawing of the foundation, and add a custom text requirement: "High durability required for coastal environment with saltwater spray." The engine correctly identifies the need for a more stringent exposure class (e.g., XS3), combines it with requirements from the drawing (like maximum aggregate size), and provides a precise pass/fail verdict for each product.
+
+-   **Scenario 3: Regulatory "what-if" analysis**
+    A sustainability consultant wants to compare the availability of compliant products between two different regions (e.g., Europe vs. Australia). They can run the same set of EPDs through the engine twice, first selecting the EN 206 schema and then the AS 3600 schema, to instantly see how regulatory differences impact material eligibility.
+
+
+## Contact 
+
+Roger Vergés – [roger.verges.eiras@upc.edu](mailto:roger.verges.eiras@upc.edu)
+
+Project link: [https://github.com/eirasroger/concrete-screening-app](https://github.com/eirasroger/concrete-screening-app)
+
+## Additional information 
+Related publication: The associated academic paper is currently under review. The DOI will be added here upon acceptance.
