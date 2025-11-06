@@ -9,15 +9,15 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 # --- Imports ---
-from src.frontend.ui_inputs import regulation_selector, custom_info_input, epd_uploader, drawing_uploader
-from src.backend.regulations import list_regulations
-from src.backend.file_handler import save_uploaded_files, clear_io_folders, EPD_INPUT_DIR, EPD_OUTPUT_DIR
-from src.backend.llm_calls import extract_epd_data, save_extraction_result, extract_epd_data_async
-from src.backend.compliance_checker import load_regulation_file, get_final_requirements, calculate_epd_metrics, perform_compliance_check
-from src.backend.mapping_processor import load_mapping_file, determine_exposure_classes_with_llm, save_custom_analysis_result
-from src.backend.custom_constraints_extractor import extract_custom_constraints
-from src.backend.drawing_processor import analyze_drawing_with_context
-from src.backend.file_handler import DRAWING_INPUT_DIR 
+from src.UI.ui_inputs import regulation_selector, custom_info_input, epd_uploader, drawing_uploader
+from src.engine.regulations import list_regulations
+from src.engine.file_handler import save_uploaded_files, clear_io_folders, EPD_INPUT_DIR, EPD_OUTPUT_DIR
+from src.engine.llm_calls import extract_epd_data, save_extraction_result, extract_epd_data_async
+from src.engine.compliance_checker import load_regulation_file, get_final_requirements, calculate_epd_metrics, perform_compliance_check
+from src.engine.mapping_processor import load_mapping_file, determine_exposure_classes_with_llm, save_custom_analysis_result
+from src.engine.custom_constraints_extractor import extract_custom_constraints
+from src.engine.drawing_processor import analyze_drawing_with_context
+from src.engine.file_handler import DRAWING_INPUT_DIR 
 
 
 

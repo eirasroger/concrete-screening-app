@@ -4,7 +4,6 @@ import os
 def list_regulations():
     # Get the directory of the current script (regulation_utils.py)
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    # Go up two levels (from backend -> src -> interactive_interface) and then into data/regulations
     regulations_folder = os.path.join(script_dir, '..', '..', 'data', 'regulations')
     
     try:
