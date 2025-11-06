@@ -105,7 +105,7 @@ def calculate_epd_metrics(epd_data: dict) -> Dict[str, Any]:
         percentage = material.get("percentage", 0)
         
         if "water" in name_lower or "agua" in name_lower: water_mass_percent += percentage
-        elif "cement" in name_lower or "cem " in name_lower: cement_mass_percent += percentage
+        elif ("cement" in name_lower or "cem " in name_lower) and "supplementary" not in name_lower and "cementitious" not in name_lower: cement_mass_percent += percentage
 
     if cement_mass_percent > 0:
         metrics["calculated_wc"] = water_mass_percent / cement_mass_percent
@@ -122,42 +122,59 @@ def perform_compliance_check(epd_metrics: dict, final_reqs: dict) -> Dict[str, A
     # Check 1: Water/Cement Ratio
     required_wc = final_reqs.get("max_wc")
     epd_wc = epd_metrics.get("calculated_wc")
-    if required_wc is not None and epd_wc is not None and required_wc < 1.0:
-        if epd_wc > required_wc:
-            results["pass"] = False
-            results["details"].append(f"FAIL: EPD w/c ratio ({epd_wc:.2f}) exceeds required max ({required_wc}).")
+    if required_wc is not None and required_wc < 1.0:
+        if epd_wc is not None:
+            if epd_wc > required_wc:
+                results["pass"] = False
+                results["details"].append(f"FAIL: EPD w/c ratio ({epd_wc:.2f}) exceeds required max ({required_wc}).")
+            else:
+                results["details"].append(f"PASS: EPD w/c ratio ({epd_wc:.2f}) meets required max ({required_wc}).")
         else:
-            results["details"].append(f"PASS: EPD w/c ratio ({epd_wc:.2f}) meets required max ({required_wc}).")
+            results["pass"] = False
+            results["details"].append("FAIL: EPD does not provide information regarding w/c ratio.")
 
-    # Check 2: Minimum Cement Content
+# Check 2: Minimum Cement Content
     required_cement = final_reqs.get("min_cement")
     epd_cement = epd_metrics.get("cement_content_kg_m3")
-    if required_cement is not None and epd_cement is not None and required_cement > 0:
-        if epd_cement < required_cement:
-            results["pass"] = False
-            results["details"].append(f"FAIL: EPD cement content ({epd_cement:.0f} kg/m3) is below required min ({required_cement} kg/m3).")
+    if required_cement is not None and required_cement > 0:
+        if epd_cement is not None:
+            if epd_cement < required_cement:
+                results["pass"] = False
+                results["details"].append(f"FAIL: EPD cement content ({epd_cement:.0f} kg/m3) is below required min ({required_cement} kg/m3).")
+            else:
+                results["details"].append(f"PASS: EPD cement content ({epd_cement:.0f} kg/m3) meets required min ({required_cement} kg/m3).")
         else:
-            results["details"].append(f"PASS: EPD cement content ({epd_cement:.0f} kg/m3) meets required min ({required_cement} kg/m3).")
-            
-    # Check 3: Strength Class (defaulting to cylinder strength)
+            results["pass"] = False
+            results["details"].append("FAIL: EPD does not provide information regarding cement content.")
+
+# Check 3: Strength Class (defaulting to cylinder strength)
     required_strength = final_reqs.get("strength_min_cyl")
     epd_strength = epd_metrics.get("strength_mpa")
-    if required_strength is not None and epd_strength is not None and required_strength > 0:
-        if epd_strength < required_strength:
-            results["pass"] = False
-            results["details"].append(f"FAIL: EPD strength ({epd_strength} MPa) is below required min cylinder strength ({required_strength} MPa).")
+    if required_strength is not None and required_strength > 0:
+        if epd_strength is not None:
+            if epd_strength < required_strength:
+                results["pass"] = False
+                results["details"].append(f"FAIL: EPD strength ({epd_strength} MPa) is below required min cylinder strength ({required_strength} MPa).")
+            else:
+                results["details"].append(f"PASS: EPD strength ({epd_strength} MPa) meets required min cylinder strength ({required_strength} MPa).")
         else:
-            results["details"].append(f"PASS: EPD strength ({epd_strength} MPa) meets required min cylinder strength ({required_strength} MPa).")
+            results["pass"] = False
+            results["details"].append("FAIL: EPD does not provide information regarding compressive strength.")
+
     
     # Check 4: Maximum Aggregate Size
     required_dmax = final_reqs.get("max_aggregate_size")
     epd_dmax = epd_metrics.get("max_aggregate_size")
-    if required_dmax is not None and epd_dmax is not None:
-        if epd_dmax > required_dmax:
-            results["pass"] = False
-            results["details"].append(f"FAIL: EPD aggregate size ({epd_dmax} mm) exceeds required max ({required_dmax} mm).")
+    if required_dmax is not None:
+        if epd_dmax is not None:
+            if epd_dmax > required_dmax:
+                results["pass"] = False
+                results["details"].append(f"FAIL: EPD aggregate size ({epd_dmax} mm) exceeds required max ({required_dmax} mm).")
+            else:
+                results["details"].append(f"PASS: EPD aggregate size ({epd_dmax} mm) meets required max ({required_dmax} mm).")
         else:
-            results["details"].append(f"PASS: EPD aggregate size ({epd_dmax} mm) meets required max ({required_dmax} mm).")
+            results["pass"] = False
+            results["details"].append("FAIL: EPD does not provide information regarding max aggregate size.")
 
     if not results["details"]:
         results["details"].append("No specific requirements found to check against.")
