@@ -13,7 +13,7 @@ The system synthesises this information to create a comprehensive screening scen
 
 ## Features
 
-- **Multi-source sata integration:** Harmonises requirements from regulatory JSON files, user-defined text, and PDF documents (EPDs and drawings).
+- **Multi-source data integration:** Harmonises requirements from regulatory JSON files, user-defined text, and PDF documents (EPDs and drawings).
 - **LLM-powered data extraction:** Automatically parses PDF documents to extract structured technical data, such as material composition, water-to-cement ratios, and characteristic strength.
 - **Dynamic compliance engine:** Evaluates concrete products against a consolidated set of the most stringent requirements from all available data sources.
 - **Jurisdiction-specific analysis:** Adapts the screening process based on user-selected regulatory schemas (e.g., EN 206 vs. AS 3600).
