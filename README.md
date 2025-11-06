@@ -124,7 +124,11 @@ This engine is designed to be flexible and can be adapted to several common indu
 
 Roger Vergés – [roger.verges.eiras@upc.edu](mailto:roger.verges.eiras@upc.edu)
 
-Project link: [https://github.com/eirasroger/concrete-screening-app](https://github.com/eirasroger/concrete-screening-app)
+Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), C/ Colom, 11, Ed. TR5, 08222 Terrassa, Catalonia, Spain
+
+Faculty of Architecture, Building and Planning, The University of Melbourne, Parkville, Australia
 
 ## Additional information 
 Related publication: The associated academic paper is currently under review. The DOI will be added here upon acceptance.
+
+
