@@ -2,7 +2,8 @@
 
 ## Project Overview
 
-This project presents an interactive decision-support engine designed to automate and streamline the **durability compliance screening** of concrete products. The tool helps engineers and sustainability experts make faster, more informed material selections by evaluating Environmental Product Declarations (EPDs) against project-specific requirements.
+This project presents an interactive decision-support engine designed to automate and streamline the **durability compliance screening** of concrete products. The tool helps engineers and sustainability experts make faster, more informed material selections by evaluating Environmental Product Declarations (EPDs) against project-specific requirements. 
+
 
 The engine integrates three key data sources:
 1.  **Regulatory schemas:** Frameworks like EN 206 (Europe) or AS 3600 (Australia) provide the baseline durability requirements and exposure class thresholds.
@@ -10,6 +11,8 @@ The engine integrates three key data sources:
 3.  **User-defined context:** Custom text inputs allow users to specify additional constraints, such as unique environmental conditions or performance targets that exceed regulatory minimums.
 
 The system synthesises this information to create a comprehensive screening scenario, ultimately providing a clear "pass/fail" verdict for each concrete product.
+
+While the case study in this project focuses on concrete, the methodological framework is designed for broader application. Its adaptation to other construction products requires updating the associated regulations, prompts, and compliance checks.
 
 ## Features
 
@@ -111,22 +114,25 @@ Follow these steps to get a local copy up and running.
 This engine is designed to be flexible and can be adapted to several common industry scenarios:
 
 -   **Scenario 1: Preliminary product screening**
+
     An engineer has a list of potential concrete suppliers for a new project. They can quickly upload all supplier EPDs and screen them against the default regulatory schema (e.g., EN 206) to create a shortlist of compliant products for a standard application, like an indoor column.
 
 -   **Scenario 2: Detailed design compliance**
+
     A structural engineer is designing a foundation for a building in a coastal area. They upload the relevant EPDs, a technical drawing of the foundation, and add a custom text requirement: "High durability required for coastal environment with saltwater spray." The engine correctly identifies the need for a more stringent exposure class (e.g., XS3), combines it with requirements from the drawing (like maximum aggregate size), and provides a precise pass/fail verdict for each product.
 
 -   **Scenario 3: Regulatory "what-if" analysis**
+
     A sustainability consultant wants to compare the availability of compliant products between two different regions (e.g., Europe vs. Australia). They can run the same set of EPDs through the engine twice, first selecting the EN 206 schema and then the AS 3600 schema, to instantly see how regulatory differences impact material eligibility.
 
 
 ## Contact 
 
-Roger Vergés – [roger.verges.eiras@upc.edu](mailto:roger.verges.eiras@upc.edu)
+Roger Vergés <sup>1, 2</sup> – [roger.verges.eiras@upc.edu](mailto:roger.verges.eiras@upc.edu)
 
-Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), C/ Colom, 11, Ed. TR5, 08222 Terrassa, Catalonia, Spain
+<sup>1</sup> Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), C/ Colom, 11, Ed. TR5, 08222 Terrassa, Catalonia, Spain
 
-Faculty of Architecture, Building and Planning, The University of Melbourne, Parkville, Australia
+<sup>2</sup> Faculty of Architecture, Building and Planning, The University of Melbourne, Parkville, Australia
 
 ## Additional information 
 Related publication: The associated academic paper is currently under review. The DOI will be added here upon acceptance.
