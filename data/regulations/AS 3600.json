@@ -1,0 +1,9 @@
+{
+  "A1": {"max_wc": null, "min_cement": 320, "strength_min_cyl": 20},
+  "A2": {"max_wc": null, "min_cement": 320, "strength_min_cyl": 25},
+  "B1": {"max_wc": 0.55, "min_cement": 320, "strength_min_cyl": 30},
+  "B2": {"max_wc": 0.50, "min_cement": 320, "strength_min_cyl": 30},
+  "C1": {"max_wc": 0.50, "min_cement": 320, "strength_min_cyl": 30},
+  "C2": {"max_wc": 0.50, "min_cement": 320, "strength_min_cyl": 30},
+  "U": {"max_wc": null, "min_cement": null, "strength_min_cyl": null}
+}

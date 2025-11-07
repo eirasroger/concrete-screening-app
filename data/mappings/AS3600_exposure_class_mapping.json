@@ -1,0 +1,9 @@
+{
+  "A1": [{"descr_env": "surface of members in contact with the ground: members protected by a damp-proof membrane and residential footings in non aggressive soils;Surfaces of members in interior environments: fully enclosed within a building except for a brief period of weather during construction; residential A1; Surfaces of members in abov-ground exterior environments in areas that are (a) inland (more than 50  km); non industrial and arid climatic zone A1);"}],
+  "A2": [{"descr_env": "surface of members in contact with the ground: other members in non aggressive soils A2; Surfaces of members in interior environments: fully enclosed within a building except for a brief period of weather during construction non residential A2; Surfaces of members in abov-ground exterior environments in areas that are: non industrial and temperate climatic zone (A2);  "}],
+  "B1": [{"descr_env": "Surfaces of members in interior environments: (b) in industrial buildings, the member being subject to repeated wetting and drying B1; Surfaces of members in abov-ground exterior environments in areas that are industrial and any climatic zone B1, near coastal (1-50 km) any climatic zone B1, Surfaces of members in water in freshwater (continuously) B1 "}],
+  "B2": [{"descr_env": "Surfaces of members in abov-ground exterior environments in areas that are: coastal and any climatic zone B2, Surfaces of maritime structures in sea water: permanently submerged B2 "}],
+  "C1": [{"descr_env": "Surfaces of maritime structures in sea water in spray zone C1"}],
+  "C2": [{"descr_env": "Surfaces of maritime structures in sea water in tidal/splash zone C2"}],
+  "U": [{"descr_env": "Surface of members in other environments, that is, any exposure environment not specified in items 1 to 5 above U"}]
+}

@@ -51,7 +51,7 @@ Follow these steps to get a local copy up and running.
     - Inside the `.streamlit` folder, create a new file named `secrets.toml`.
     - Add your OpenAI API key to the file like this:
       ```
-      api_key = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       ```
 
 4.  **Run the application:**
@@ -130,7 +130,7 @@ This engine is designed to be flexible and can be adapted to several common indu
 
 Roger Vergés <sup>1, 2</sup> – [roger.verges.eiras@upc.edu](mailto:roger.verges.eiras@upc.edu)
 
-<sup>1</sup> Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), C/ Colom, 11, Ed. TR5, 08222 Terrassa, Catalonia, Spain
+<sup>1</sup> Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), Terrassa, Catalonia
 
 <sup>2</sup> Faculty of Architecture, Building and Planning, The University of Melbourne, Parkville, Australia
 

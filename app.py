@@ -95,7 +95,7 @@ with col1:
                 # --- Step 1: Determine Exposure Class ---
                 st.write("Step 1: Determining exposure classes...")
                 mapping = load_mapping_file(regulation, "exposure_class")
-                exp_class_result = determine_exposure_classes_with_llm(custom_info, mapping, api_key)
+                exp_class_result = determine_exposure_classes_with_llm(custom_info, mapping, regulation, api_key)
                 
                 st.session_state.custom_info_result = {
                     "input_description": custom_info,
