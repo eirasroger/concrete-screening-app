@@ -1,5 +1,8 @@
 # Interactive Decision Support Engine for Compliance Screening
 
+**➡️ [Try the live application here!](https://concrete-screening-app.streamlit.app/) ⬅️**
+
+
 ## Project Overview
 
 This project presents an interactive decision-support engine designed to automate and streamline the **durability compliance screening** of concrete products. The tool helps engineers and sustainability experts make faster, more informed material selections by evaluating Environmental Product Declarations (EPDs) against project-specific requirements. 
@@ -25,14 +28,30 @@ While the case study in this project focuses on concrete, the methodological fra
 
 ## Getting Started
 
+
+
+You can use the live, deployed application or run a copy locally on your own machine.
+
+### Using the Live App
+
+
+1.  **Navigate to the app:** [https://concrete-screening-app.streamlit.app/](https://concrete-screening-app.streamlit.app/)
+2.  **Provide your API Key:** The application will prompt you to enter your own OpenAI API Key. Your key is not stored and is only used for the duration of your session.
+3.  **Start screening:** Follow the on-screen instructions to upload documents and define your scenario.
+
+
+
+
+### Running Locally
+
 Follow these steps to get a local copy up and running.
 
-### Prerequisites
+**Prerequisites:**
 
 - Python 3.12.7 or higher
 - An OpenAI API Key
 
-### Quick Start
+**Quick Start:**
 
 1.  **Clone the repository:**
     ```

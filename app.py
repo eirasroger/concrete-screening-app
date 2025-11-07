@@ -269,7 +269,6 @@ else:
     
     api_key_input = st.text_input(
         "OpenAI API Key",
-        type="password",
         placeholder="sk-...",
         help="Your key is not stored. It is only used for this session.",
         key="api_key_input_widget"
