@@ -2,6 +2,7 @@
 
 **➡️ [Try the live application here!](https://concrete-screening-app.streamlit.app/) ⬅️**
 
+*(Note: If the app is asleep due to inactivity, please press the button on the page to wake it. It will load shortly after.)*
 
 ## Project Overview
 
@@ -36,8 +37,9 @@ You can use the live, deployed application or run a copy locally on your own mac
 
 
 1.  **Navigate to the app:** [https://concrete-screening-app.streamlit.app/](https://concrete-screening-app.streamlit.app/)
-2.  **Provide your API Key:** The application will prompt you to enter your own OpenAI API Key. Your key is not stored and is only used for the duration of your session.
-3.  **Start screening:** Follow the on-screen instructions to upload documents and define your scenario.
+2.  **Wake the app (if needed)**: If the application has been inactive, you may see a "sleeping" screen. Simply press the button to wake it up.
+3.  **Provide your API Key:** The application will prompt you to enter your own OpenAI API Key. Your key is not stored and is only used for the duration of your session.
+4.  **Start screening:** Follow the on-screen instructions to upload documents and define your scenario.
 
 
 
@@ -73,11 +75,14 @@ Follow these steps to get a local copy up and running.
       OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       ```
 
+*Note: The application is designed to find your API key in the `secrets.toml` file first. If that file is not present, the app will fall back to prompting you for your key directly in the user interface. You can choose whichever method you prefer for local development.*
+
+
 4.  **Run the application:**
     ```
     streamlit run app.py
     ```
-
+*Depending on your choice in step 3, the app will either load directly or first ask you to provide your API key.*
 
 ## Repository Structure
 ```
@@ -120,8 +125,11 @@ Follow these steps to get a local copy up and running.
 │ └── regulations.py
 │
 ├── prompts/ # Text files containing prompts for the LLM
+│ ├── custom_constraints_extractor.txt
+│ ├── drawing_processor.txt
 │ ├── epd_extraction.txt
-│ └── exposure_class_determination.txt
+│ ├── exposure_class_determination.txt
+│ └── exposure_class_determination_AS3600.txt
 │
 └── UI/ # Modules related to the Streamlit user interface
 └── ui_inputs.py
