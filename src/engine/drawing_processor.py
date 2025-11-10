@@ -19,47 +19,14 @@ def pdf_to_base64_images(pdf_path: str) -> List[str]:
     except Exception as e:
         return {"error": f"Failed to convert PDF to images: {e}"}
 
-def get_drawing_analysis_prompt():
+def get_drawing_analysis_prompt() -> str:
     """
-    Returns a targeted prompt for analyzing technical drawings.
+    Returns a targeted prompt for analyzing technical drawings by reading from a file.
     """
-    return """You are a world-class civil engineering AI assistant. Your primary task is to analyze the provided technical drawing to find specific requirements for a concrete element.
-
-**CRITICAL INSTRUCTION: PAY CLOSE ATTENTION TO TITLE BLOCKS**
-Your first and most important task is to meticulously read all text inside the main title block (or "cajetín" or similar, pay attention to language variations) on each drawing sheet, especially the first one. This area often contains a "General Notes" (NOTES GENERALS) or "Specifications" section with the most critical information.
-
-**Context from User:**
-- **Intended Application:** The user's description of what the concrete is for (e.g., "for the columns").
-- **Preliminary Exposure Classes:** A baseline list of exposure classes from the user's text.
-
-**Your Task (Revised Priority):**
-
-1.  **Analyze Title Block First:** Search the title block for general concrete specifications. Look for designations like "HA-25", "C25/30", or specific exposure classes like "IIa" or "XC3". This information applies to the whole project unless overridden by a specific note.
-2.  **Locate the Relevant Element:** Use the user's "Intended Application" to find the specific element (e.g., "column," "slab") on the drawing.
-3.  **Find Overriding Element-Specific Notes:** Search for any notes directly attached to or referencing that specific element. These notes can override the general specifications from the title block.
-
-**Information to Extract:**
-
-*   `strength_class_mpa`: The compressive strength in MPa. An "HA-25" designation means 25 MPa. A "C30/37" designation means 30 MPa (use the cylinder value).
-*   `min_cement_content`: Minimum cement content in kg/m3.
-*   `max_w_c_ratio`: Maximum water-to-cement ratio.
-*   `max_aggregate_size`: Maximum aggregate size in mm (e.g., D22). "tamany de l'àrid" in catalan.
-*   `drawing_exposure_classes`: A list of exposure classes. Note that Spanish code "IIa" corresponds to Eurocode classes.
-
-**Final Output:**
-You must return a single, valid JSON object with **three** keys: `element_specific_reqs`, `drawing_exposure_classes`, and `analysis_notes`.
-
-**Example Scenario (based on a title block):**
-- User Intended Application: "Indoor application"
-- Your Task: You find "Formigó Estructural: HA-25 / B / 20 / IIa" in the title block (and any other relevant information that may apply).
-- Your Output should be:
-    {{
-      "element_specific_reqs": {{ "strength_class_mpa": 25, "min_cement_content": null, "max_w_c_ratio": null, "max_aggregate_size": 20 }},
-      "drawing_exposure_classes": ["XC3", "XA1"],
-      "analysis_notes": "Found general concrete specification 'HA-25 / B / 20 / IIa' in the title block on sheet E.01."
-    }}
-...
-"""
+    # Construct the path to the prompt file relative to the current script
+    prompt_file_path = os.path.join(os.path.dirname(__file__), '..', 'prompts', 'drawing_processor.txt')
+    with open(prompt_file_path, 'r') as f:
+        return f.read()
 
 def analyze_drawing_with_context(api_key: str, drawing_path: str, custom_info: str, preliminary_classes: List[str]) -> dict:
     """

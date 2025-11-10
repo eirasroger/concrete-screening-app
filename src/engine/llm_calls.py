@@ -28,12 +28,12 @@ def extract_epd_data(api_key: str, pdf_path: str) -> dict:
 
     client = OpenAI(api_key=api_key)
 
-    # 1. Get the prompt text that will instruct the model
+    # Get the prompt text that will instruct the model
     prompt_text = get_prompt_template("epd_extraction")
     if prompt_text.startswith("ERROR"):
         return {"error": prompt_text}
 
-    # 2. Convert PDF pages to a list of base64-encoded images
+    # Convert PDF pages to a list of base64-encoded images
     base64_images = []
     try:
         doc = fitz.open(pdf_path)
@@ -45,7 +45,7 @@ def extract_epd_data(api_key: str, pdf_path: str) -> dict:
     except Exception as e:
         return {"error": f"Failed to convert PDF to images: {e}"}
 
-    # 3. Construct the message payload for the vision model
+    # Construct the message payload for the vision model
     # The first part of the content is always the text prompt
     messages_content = [{"type": "text", "text": prompt_text}]
 
@@ -56,7 +56,7 @@ def extract_epd_data(api_key: str, pdf_path: str) -> dict:
             "image_url": {"url": f"data:image/png;base64,{img}"}
         })
         
-    # 4. Make the API call to gpt
+    # Make the API call to gpt
     try:
         response = client.chat.completions.create(
             model="gpt-4.1-2025-04-14",

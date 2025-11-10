@@ -46,11 +46,11 @@ def get_final_requirements(
 
     # --- Initialize requirements and process against regulations ---
     final_reqs = {
-        "max_wc": 1.0,  # Permissive start
-        "min_cement": 0,  # Permissive start
+        "max_wc": 1.0,
+        "min_cement": 0,
         "strength_min_cyl": 0,
         "strength_min_cube": 0,
-        "max_aggregate_size": float('inf') # Permissive start for a max value
+        "max_aggregate_size": float('inf') 
     }
     
     for ec in combined_classes:
@@ -119,7 +119,7 @@ def perform_compliance_check(epd_metrics: dict, final_reqs: dict) -> Dict[str, A
     """Compares EPD metrics against the final, aggregated requirements."""
     results = {"pass": True, "details": []}
 
-    # Check 1: Water/Cement Ratio
+    # Check 1: Water/cement ratio
     required_wc = final_reqs.get("max_wc")
     epd_wc = epd_metrics.get("calculated_wc")
     if required_wc is not None and required_wc < 1.0:
@@ -133,7 +133,7 @@ def perform_compliance_check(epd_metrics: dict, final_reqs: dict) -> Dict[str, A
             results["pass"] = False
             results["details"].append("FAIL: EPD does not provide information regarding w/c ratio.")
 
-# Check 2: Minimum Cement Content
+# Check 2: Minimum cement content
     required_cement = final_reqs.get("min_cement")
     epd_cement = epd_metrics.get("cement_content_kg_m3")
     if required_cement is not None and required_cement > 0:
@@ -147,7 +147,7 @@ def perform_compliance_check(epd_metrics: dict, final_reqs: dict) -> Dict[str, A
             results["pass"] = False
             results["details"].append("FAIL: EPD does not provide information regarding cement content.")
 
-# Check 3: Strength Class (defaulting to cylinder strength)
+# Check 3: Strength class (defaulting to cylinder strength)
     required_strength = final_reqs.get("strength_min_cyl")
     epd_strength = epd_metrics.get("strength_mpa")
     if required_strength is not None and required_strength > 0:
@@ -162,7 +162,7 @@ def perform_compliance_check(epd_metrics: dict, final_reqs: dict) -> Dict[str, A
             results["details"].append("FAIL: EPD does not provide information regarding compressive strength.")
 
     
-    # Check 4: Maximum Aggregate Size
+    # Check 4: Maximum aggregate size
     required_dmax = final_reqs.get("max_aggregate_size")
     epd_dmax = epd_metrics.get("max_aggregate_size")
     if required_dmax is not None:

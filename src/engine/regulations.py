@@ -1,6 +1,5 @@
 import os
 
-# NOTE: We navigate from the script location to the data folder
 def list_regulations():
     # Get the directory of the current script (regulation_utils.py)
     script_dir = os.path.dirname(os.path.abspath(__file__))

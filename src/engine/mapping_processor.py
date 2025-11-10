@@ -17,7 +17,7 @@ def load_mapping_file(regulation_name: str, mapping_type: str = "exposure_class"
     Loads a specific mapping JSON file based on the regulation and type.
     Example filename: 'en206_exposure_class_mapping.json'
     """
-    # --- FIX: Remove spaces from the regulation name ---
+    # --- Remove spaces from the regulation name ---
     cleaned_regulation_name = regulation_name.lower().replace(" ", "")
     
     mapping_filename = f"{cleaned_regulation_name}_{mapping_type}_mapping.json"
@@ -144,7 +144,7 @@ def determine_exposure_classes_with_llm(custom_info: str, mapping: dict, standar
         
         result = json.loads(response.choices[0].message.content)
         
-        # 6. Validate the response from the LLM
+        # Validate the response from the LLM
         if "assigned_exposure_classes" not in result or not isinstance(result["assigned_exposure_classes"], list):
             return {"error": "LLM returned an invalid data format.", "raw_response": result}
         

@@ -4,12 +4,10 @@ import shutil
 import streamlit as st
 from typing import List
 
-# Define base paths
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 INPUT_DIR = os.path.join(BASE_DIR, 'data', 'input')
 OUTPUT_DIR = os.path.join(BASE_DIR, 'data', 'output')
 
-# Define specific subfolder paths
 EPD_INPUT_DIR = os.path.join(INPUT_DIR, 'epds')
 DRAWING_INPUT_DIR = os.path.join(INPUT_DIR, 'drawings')
 EPD_OUTPUT_DIR = os.path.join(OUTPUT_DIR, 'epds')
@@ -54,7 +52,6 @@ def clear_io_folders():
     Clears the contents of the input and output subdirectories without deleting
     the directories themselves or their .gitkeep files.
     """
-    # List of all directories that need to be cleared
     dirs_to_clear = [
         EPD_INPUT_DIR, DRAWING_INPUT_DIR, CUSTOM_INFO_INPUT_DIR,
         EPD_OUTPUT_DIR, os.path.join(OUTPUT_DIR, 'drawings'), CUSTOM_INFO_OUTPUT_DIR

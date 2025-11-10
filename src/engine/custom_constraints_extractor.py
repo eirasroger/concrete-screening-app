@@ -1,28 +1,16 @@
 import json
 from openai import OpenAI
+import os
 
-def get_prompt():
+
+def get_prompt() -> str:
     """
     Returns the prompt for extracting custom technical constraints.
     """
-    return """You are a highly specialized data extraction bot. Your task is to analyze a user's text and extract three specific technical requirements for concrete.
+    prompt_file_path = os.path.join(os.path.dirname(__file__), '..', 'prompts', 'custom_constraints_extractor.txt')
+    with open(prompt_file_path, 'r') as f:
+        return f.read()
 
-The requirements to look for are:
-1.  `min_cement_content` (in kg/m3)
-2.  `max_w_c_ratio` (a decimal value)
-3.  `min_mpa_strength` (the compressive strength in MPa)
-4.  `max_aggregate_size` (the maximum aggregate size in mm)
-
-**Instructions:**
-- Analyze the user's text for any mention of these values (whether explicit or implicit semantic similarities).
-- Return a single JSON object.
-- - The JSON object must contain exactly these four keys: `min_cement_content`, `max_w_c_ratio`, `min_mpa_strength`, and `max_aggregate_size`.
-- If a value is not mentioned or is unclear, its corresponding key in the JSON must have a value of `null`.
-- Do not add any other text, explanation, or formatting. Only the JSON object is allowed.
-
-User Text:
-"{custom_info}"
-"""
 
 def extract_custom_constraints(custom_info: str, api_key: str) -> dict:
     """
@@ -42,13 +30,7 @@ def extract_custom_constraints(custom_info: str, api_key: str) -> dict:
             response_format={"type": "json_object"}
         )
         
-        extracted_data = json.loads(response.choices[0].message.content)
-        
-        # Final validation to ensure the structure is correct
-        expected_keys = {"min_cement_content", "max_w_c_ratio", "min_mpa_strength"}
-        if not expected_keys.issubset(extracted_data.keys()):
-            return {"error": "LLM failed to return the correct JSON structure for custom constraints."}
-            
+        extracted_data = json.loads(response.choices[0].message.content)    
         return extracted_data
 
     except Exception as e:
