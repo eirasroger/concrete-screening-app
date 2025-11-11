@@ -91,11 +91,12 @@ def main_app():
     col1, col2 = st.columns(2)
 
     with col1:
+        st.header("Custom user scenario analysis")
         if st.button("Determine user-induced requirements", disabled=(not custom_info)):
             if not st.session_state.openai_api_key:
                 st.error("OpenAI API key not found.")
             else:
-                with st.spinner("Analyzing custom scenario... (2 steps)"):
+                with st.spinner("Analysing custom scenario... (2 steps)"):
                     api_key = st.session_state.openai_api_key
                     
                     st.write("Step 1: Determining exposure classes...")
@@ -119,39 +120,10 @@ def main_app():
                         if 'error' in user_constraints_result:
                             st.error(f"Custom constraint error: {user_constraints_result['error']}")
 
-    def run_async_analysis(api_key, filenames, input_dir):
-        async def main():
-            tasks = [extract_epd_data_async(api_key, os.path.join(input_dir, filename)) for filename in filenames]
-            return await asyncio.gather(*tasks)
-        return asyncio.run(main())
-
-    if st.button("Run EPD data extraction", disabled=(not st.session_state.saved_epd_names)):
-        if not st.session_state.openai_api_key:
-            st.error("OpenAI API key not found.")
-        else:
-            with st.spinner("Analyzing all EPDs... This may take a moment."):
-                api_key = st.session_state.openai_api_key
-                results = run_async_analysis(api_key, st.session_state.saved_epd_names, EPD_INPUT_DIR)
-                st.session_state.analysis_results = dict(zip(st.session_state.saved_epd_names, results))
-                
-                for filename, result in st.session_state.analysis_results.items():
-                    if 'error' not in result:
-                        save_extraction_result(result, filename, EPD_OUTPUT_DIR)
-                st.success("Data extraction complete!")
-
-    # --- Results Display Sections ---
-    if st.session_state.analysis_results:
-        st.subheader("Extraction results")
-        for filename, result in st.session_state.analysis_results.items():
-            with st.expander(f"Results for: **{filename}**"):
-                if 'error' in result:
-                    st.error(f"Could not process file: {result['error']}")
-                else:
-                    st.json(result)
-
-    st.subheader("User-induced requirement results")
+ 
 
     if st.session_state.custom_info_result:
+        st.markdown("##### Custom user requirement results")
         with st.expander("Custom scenario analysis: Exposure classes", expanded=True): 
             if 'error' in st.session_state.custom_info_result:
                 st.error(st.session_state.custom_info_result['error'])
@@ -174,14 +146,14 @@ def main_app():
 
     # --- Drawing Analysis Section ---
     st.divider()
-    st.header("Drawing requirement analysis based on user-provided context")
+    st.header("Drawing/Project documentation requirement analysis")
     can_analyze_drawings = st.session_state.saved_drawing_names and st.session_state.custom_info_result
 
-    if st.button("Analyze drawings with context", disabled=(not can_analyze_drawings)):
+    if st.button("Analyse drawings with user-defined context", disabled=(not can_analyze_drawings)):
         if not st.session_state.openai_api_key:
             st.error("OpenAI API key not found.")
         else:
-            with st.spinner("Analyzing drawings... This can take a while."):
+            with st.spinner("Analysing drawings... This can take a while."):
                 api_key = st.session_state.openai_api_key
                 custom_info_data = st.session_state.custom_info_result
                 all_drawing_results = {}
@@ -198,10 +170,44 @@ def main_app():
                 st.success("Drawing analysis complete!")
 
     if st.session_state.drawing_analysis_results:
-        st.subheader("Drawing analysis results")
+        st.markdown("#### Drawing analysis results")
         for filename, result in st.session_state.drawing_analysis_results.items():
             with st.expander(f"Results for: **{filename}**"):
                 st.json(result)
+
+
+    # --- EPD Data Extraction Section ---
+    def run_async_analysis(api_key, filenames, input_dir):
+        async def main():
+            tasks = [extract_epd_data_async(api_key, os.path.join(input_dir, filename)) for filename in filenames]
+            return await asyncio.gather(*tasks)
+        return asyncio.run(main())
+
+    st.divider()
+    st.header("EPD data extraction")
+    if st.button("Run EPD data extraction", disabled=(not st.session_state.saved_epd_names)):
+        if not st.session_state.openai_api_key:
+            st.error("OpenAI API key not found.")
+        else:
+            with st.spinner("Analysing all EPDs... This may take a moment."):
+                api_key = st.session_state.openai_api_key
+                results = run_async_analysis(api_key, st.session_state.saved_epd_names, EPD_INPUT_DIR)
+                st.session_state.analysis_results = dict(zip(st.session_state.saved_epd_names, results))
+                
+                for filename, result in st.session_state.analysis_results.items():
+                    if 'error' not in result:
+                        save_extraction_result(result, filename, EPD_OUTPUT_DIR)
+                st.success("Data extraction complete!")
+
+    # --- Results Display Sections ---
+    if st.session_state.analysis_results:
+        st.markdown("#### EPD data extraction results")
+        for filename, result in st.session_state.analysis_results.items():
+            with st.expander(f"Results for: **{filename}**"):
+                if 'error' in result:
+                    st.error(f"Could not process file: {result['error']}")
+                else:
+                    st.json(result)
 
     # --- Final Compliance Section ---
     st.divider()
