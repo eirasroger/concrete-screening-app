@@ -170,6 +170,6 @@ Related publication: The associated academic paper is currently under review. Th
 
 
 
-<sup>1</sup> Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), Terrassa, Catalonia
+<sup>1</sup> Group of Construction Research and Innovation (GRIC), <a href="https://www.upc.edu/ca">Universitat Politècnica de Catalunya — BarcelonaTech (UPC)</a>, Terrassa, Catalonia
 
-<sup>2</sup> Faculty of Architecture, Building and Planning, The University of Melbourne, Parkville, Australia
+<sup>2</sup> Faculty of Architecture, Building and Planning, <a href="https://www.unimelb.edu.au/">The University of Melbourne</a>, Parkville, Australia
