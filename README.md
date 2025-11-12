@@ -1,4 +1,4 @@
-# Interactive Decision Support Engine for Compliance Screening
+# Interactive Decision-Support Engine for Compliance Screening
 
 **➡️ [Try the live application here!](https://concrete-screening-app.streamlit.app/) ⬅️**
 
@@ -155,13 +155,21 @@ This engine is designed to be flexible and can be adapted to several common indu
 
 ## Contact 
 
-Roger Vergés <sup>1, 2</sup> – [roger.verges.eiras@upc.edu](mailto:roger.verges.eiras@upc.edu)
+Roger Vergés - Corresponding author and lead developer - [roger.verges.eiras@upc.edu](mailto:roger.verges.eiras@upc.edu)
 
-<sup>1</sup> Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), Terrassa, Catalonia
 
-<sup>2</sup> Faculty of Architecture, Building and Planning, The University of Melbourne, Parkville, Australia
 
 ## Additional information 
 Related publication: The associated academic paper is currently under review. The DOI will be added here upon acceptance.
 
+### Paper contributors:
+- Roger Vergés <sup>1, 2</sup> (<a href="mailto:roger.verges.eiras@upc.edu">roger.verges.eiras@upc.edu</a>) <a href="https://orcid.org/0009-0001-5887-4785" aria-label="ORCID"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID iD" width="16" height="16" style="vertical-align: text-bottom; margin-left: 4px;"></a>
+- Kàtia Gaspar <sup>1</sup> (<a href="mailto:katia.gaspar@upc.edu">katia.gaspar@upc.edu</a>) <a href="https://orcid.org/0000-0003-3842-1401" aria-label="ORCID"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID iD" width="16" height="16" style="vertical-align: text-bottom; margin-left: 4px;"></a>
+- Núria Forcada <sup>1</sup> (<a href="mailto:nuria.forcada@upc.edu">nuria.forcada@upc.edu</a>) <a href="https://orcid.org/0000-0003-2109-4205" aria-label="ORCID"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID iD" width="16" height="16" style="vertical-align: text-bottom; margin-left: 4px;"></a>
+- M. Reza Hosseini <sup>2</sup> (<a href="mailto:mreza.hosseini@unimelb.edu.au">mreza.hosseini@unimelb.edu.au</a>) <a href="https://orcid.org/0000-0001-8675-736X" aria-label="ORCID"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID iD" width="16" height="16" style="vertical-align: text-bottom; margin-left: 4px;"></a>
 
+
+
+<sup>1</sup> Group of Construction Research and Innovation (GRIC), Universitat Politècnica de Catalunya — BarcelonaTech (UPC), Terrassa, Catalonia
+
+<sup>2</sup> Faculty of Architecture, Building and Planning, The University of Melbourne, Parkville, Australia
