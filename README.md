@@ -1,4 +1,4 @@
-# Human-in-the-Loop Agent framework for Regulatory Compliance Screening
+# Human-in-the-Loop Agent for Product Regulatory Screening
 
 **➡️ [Try the live application here!](https://concrete-screening-app.streamlit.app/) ⬅️**
 
