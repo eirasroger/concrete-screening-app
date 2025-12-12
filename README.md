@@ -1,4 +1,4 @@
-# Interactive Decision-Support Engine for Compliance Screening
+# Human-in-the-Loop Agent framework for Regulatory Compliance Screening
 
 **➡️ [Try the live application here!](https://concrete-screening-app.streamlit.app/) ⬅️**
 
@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-This project presents an interactive decision-support engine designed to automate and streamline the **durability compliance screening** of concrete products. The tool helps engineers and sustainability experts make faster, more informed material selections by evaluating Environmental Product Declarations (EPDs) against project-specific requirements. 
+This project presents a human-in-the-loop agent designed to automate and streamline the **durability compliance screening** of concrete products. The tool helps engineers and sustainability experts make faster, more informed material selections by evaluating Environmental Product Declarations (EPDs) against project-specific requirements. 
 
 
 The engine integrates three key data sources:

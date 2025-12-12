@@ -36,7 +36,7 @@ def main_app():
     from src.engine.file_handler import DRAWING_INPUT_DIR 
 
     # --- App Title & Session Initialization ---
-    st.title("Interactive decision support engine for concrete compliance screening")
+    st.title("Human-in-the-loop agent for concrete compliance screening")
     st.caption("Developed by R. Vergés et al. (2026)")
 
     if 'initialized' not in st.session_state:
