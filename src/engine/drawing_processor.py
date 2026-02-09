@@ -23,7 +23,7 @@ def get_drawing_analysis_prompt() -> str:
     """
     Returns a targeted prompt for analyzing technical drawings by reading from a file.
     """
-    # Construct the path to the prompt file relative to the current script
+    
     prompt_file_path = os.path.join(os.path.dirname(__file__), '..', 'prompts', 'drawing_processor.txt')
     with open(prompt_file_path, 'r') as f:
         return f.read()
@@ -32,8 +32,6 @@ def analyze_drawing_with_context(api_key: str, drawing_path: str, custom_info: s
     """
     Analyzes a drawing PDF using an LLM, focusing on the user's intended application.
     """
-    # This function's internal logic (API call, image conversion) remains the same.
-    # The only change is the prompt it uses.
     client = OpenAI(api_key=api_key)
     
     prompt_text = get_drawing_analysis_prompt().format(
