@@ -160,7 +160,9 @@ Roger Vergés - Corresponding author and lead developer - [roger.verges.eiras@up
 
 
 ## Additional information 
-Related publication: The associated academic paper is currently under review. The DOI will be added here upon acceptance.
+Related academic publication: R. Vergés, K. Gaspar, N. Forcada, M. R. Hosseini (2026). Human-in-the-loop agent for product regulatory screening: Case study on concrete. *Automation in Construction*, 185, 106876. [DOI: 10.1016/j.autcon.2026.106876](https://doi.org/10.1016/j.autcon.2026.106876)
+
+
 
 ### Paper contributors:
 - Roger Vergés <sup>1, 2</sup> (<a href="mailto:roger.verges.eiras@upc.edu">roger.verges.eiras@upc.edu</a>) <a href="https://orcid.org/0009-0001-5887-4785" aria-label="ORCID"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID iD" width="16" height="16" style="vertical-align: text-bottom; margin-left: 4px;"></a>
