@@ -2,7 +2,6 @@ import os
 import sys
 import streamlit as st
 import asyncio
-import json
 
 # --- App Layout (must be the first Streamlit command) ---
 st.set_page_config(page_title="Concrete compliance screening", layout="wide")
@@ -27,19 +26,22 @@ def main_app():
     # --- Imports ---
     from src.UI.ui_inputs import regulation_selector, custom_info_input, epd_uploader, drawing_uploader
     from src.engine.regulations import list_regulations
-    from src.engine.file_handler import save_uploaded_files, clear_io_folders, EPD_INPUT_DIR, EPD_OUTPUT_DIR
+    from src.engine.file_handler import (save_uploaded_files, clear_io_folders, purge_stale_session_dirs,
+                                         epd_input_dir, epd_output_dir, drawing_input_dir)
     from src.engine.llm_calls import extract_epd_data, save_extraction_result, extract_epd_data_async
     from src.engine.compliance_checker import load_regulation_file, get_final_requirements, calculate_epd_metrics, perform_compliance_check
     from src.engine.mapping_processor import load_mapping_file, determine_exposure_classes_with_llm, save_custom_analysis_result
     from src.engine.custom_constraints_extractor import extract_custom_constraints
     from src.engine.drawing_processor import analyze_drawing_with_context
-    from src.engine.file_handler import DRAWING_INPUT_DIR 
 
     # --- App Title & Session Initialization ---
     st.title("Human-in-the-loop agent for concrete compliance screening")
     st.caption("Developed by R. Vergés et al. (2026)")
 
     if 'initialized' not in st.session_state:
+        # Remove directories left behind by sessions that have since ended,
+        # then start this session with an empty set of its own folders.
+        purge_stale_session_dirs()
         clear_io_folders()
         st.session_state.initialized = True
         st.session_state.saved_epd_names = []
@@ -161,7 +163,7 @@ def main_app():
                     st.write(f"Processing: {drawing_name}...")
                     result = analyze_drawing_with_context(
                         api_key=api_key,
-                        drawing_path=os.path.join(DRAWING_INPUT_DIR, drawing_name),
+                        drawing_path=os.path.join(drawing_input_dir(), drawing_name),
                         custom_info=custom_info_data['input_description'],
                         preliminary_classes=custom_info_data['assigned_exposure_classes']
                     )
@@ -191,12 +193,12 @@ def main_app():
         else:
             with st.spinner("Analysing all EPDs... This may take a moment."):
                 api_key = st.session_state.openai_api_key
-                results = run_async_analysis(api_key, st.session_state.saved_epd_names, EPD_INPUT_DIR)
+                results = run_async_analysis(api_key, st.session_state.saved_epd_names, epd_input_dir())
                 st.session_state.analysis_results = dict(zip(st.session_state.saved_epd_names, results))
                 
                 for filename, result in st.session_state.analysis_results.items():
                     if 'error' not in result:
-                        save_extraction_result(result, filename, EPD_OUTPUT_DIR)
+                        save_extraction_result(result, filename, epd_output_dir())
                 st.success("Data extraction complete!")
 
     # --- Results Display Sections ---
@@ -231,10 +233,13 @@ def main_app():
                 for filename in st.session_state.saved_epd_names:
                     with st.expander(f"**Assessment for: {filename}**", expanded=True):
                         try:
-                            json_path = os.path.join(EPD_OUTPUT_DIR, os.path.splitext(filename)[0] + ".json")
-                            with open(json_path, 'r') as f:
-                                epd_data = json.load(f)
-                            
+                            epd_data = st.session_state.analysis_results.get(filename)
+                            # Treat a failed extraction as missing, so that it is
+                            # reported as such instead of yielding a verdict
+                            # computed from absent data.
+                            if epd_data is None or 'error' in epd_data:
+                                raise FileNotFoundError(filename)
+
                             epd_metrics = calculate_epd_metrics(epd_data)
                             st.write("##### Calculated EPD metrics")
                             st.json(epd_metrics)

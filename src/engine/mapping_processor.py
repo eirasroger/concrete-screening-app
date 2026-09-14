@@ -9,7 +9,6 @@ from .schemas import ExposureClassAssignment
 # Define paths
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 MAPPINGS_DIR = os.path.join(BASE_DIR, 'data', 'mappings')
-CUSTOM_INFO_OUTPUT_DIR = os.path.join(BASE_DIR, 'data', 'output', 'custom_information')
 
 
 def load_mapping_file(regulation_name: str, mapping_type: str = "exposure_class") -> dict:
@@ -156,10 +155,15 @@ def determine_exposure_classes_with_llm(custom_info: str, mapping: dict, standar
     except Exception as e:
         return {"error": f"An API error occurred: {str(e)}"}
 
-def save_custom_analysis_result(result: dict, filename: str = "custom_info_result.json"):
-    if not os.path.exists(CUSTOM_INFO_OUTPUT_DIR):
-        os.makedirs(CUSTOM_INFO_OUTPUT_DIR)
-    
-    output_path = os.path.join(CUSTOM_INFO_OUTPUT_DIR, filename)
+def save_custom_analysis_result(result: dict, output_dir: str, filename: str = "custom_info_result.json"):
+    """
+    Writes a custom scenario result to `output_dir`.
+
+    The directory is supplied by the caller rather than fixed here, so that the
+    result is written to the current session's own folder.
+    """
+    os.makedirs(output_dir, exist_ok=True)
+
+    output_path = os.path.join(output_dir, os.path.basename(filename))
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(result, f, indent=4)
