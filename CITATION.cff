@@ -1,0 +1,80 @@
+cff-version: 1.2.0
+title: >-
+  Human-in-the-loop agent for product regulatory screening:
+  case study on concrete
+message: >-
+  If you use this software, please cite the associated journal
+  article given under "preferred-citation".
+type: software
+authors:
+  - given-names: Roger
+    family-names: Vergés
+    email: roger.verges.eiras@upc.edu
+    orcid: 'https://orcid.org/0009-0001-5887-4785'
+    affiliation: >-
+      Group of Construction Research and Innovation (GRIC),
+      Universitat Politècnica de Catalunya - BarcelonaTech (UPC),
+      Terrassa, Catalonia
+  - given-names: Kàtia
+    family-names: Gaspar
+    email: katia.gaspar@upc.edu
+    orcid: 'https://orcid.org/0000-0003-3842-1401'
+    affiliation: >-
+      Group of Construction Research and Innovation (GRIC),
+      Universitat Politècnica de Catalunya - BarcelonaTech (UPC),
+      Terrassa, Catalonia
+  - given-names: Núria
+    family-names: Forcada
+    email: nuria.forcada@upc.edu
+    orcid: 'https://orcid.org/0000-0003-2109-4205'
+    affiliation: >-
+      Group of Construction Research and Innovation (GRIC),
+      Universitat Politècnica de Catalunya - BarcelonaTech (UPC),
+      Terrassa, Catalonia
+  - given-names: M. Reza
+    family-names: Hosseini
+    email: mreza.hosseini@unimelb.edu.au
+    orcid: 'https://orcid.org/0000-0001-8675-736X'
+    affiliation: >-
+      Faculty of Architecture, Building and Planning,
+      The University of Melbourne, Parkville, Australia
+repository-code: 'https://github.com/eirasroger/concrete-screening-app'
+url: 'https://concrete-screening-app.streamlit.app/'
+abstract: >-
+  A human-in-the-loop agent that automates durability compliance
+  screening of concrete products. The tool evaluates Environmental
+  Product Declarations against project-specific requirements,
+  integrating regulatory schemas (EN 206, AS 3600), LLM-based
+  extraction from technical drawings and EPD documents, and
+  user-defined constraints.
+keywords:
+  - concrete
+  - compliance screening
+  - environmental product declaration
+  - exposure classes
+  - large language models
+  - human-in-the-loop
+preferred-citation:
+  type: article
+  title: >-
+    Human-in-the-loop agent for product regulatory screening:
+    Case study on concrete
+  authors:
+    - given-names: Roger
+      family-names: Vergés
+      email: roger.verges.eiras@upc.edu
+      orcid: 'https://orcid.org/0009-0001-5887-4785'
+    - given-names: Kàtia
+      family-names: Gaspar
+      orcid: 'https://orcid.org/0000-0003-3842-1401'
+    - given-names: Núria
+      family-names: Forcada
+      orcid: 'https://orcid.org/0000-0003-2109-4205'
+    - given-names: M. Reza
+      family-names: Hosseini
+      orcid: 'https://orcid.org/0000-0001-8675-736X'
+  journal: Automation in Construction
+  year: 2026
+  volume: 185
+  number: '106876'
+  doi: 10.1016/j.autcon.2026.106876
