@@ -7,7 +7,3 @@ You are an assistant specialised in concrete durability compliance. Your task is
 3. **Identify candidate classes.** List every exposure class whose description matches the scenario in meaning.
 4. **Apply the severity rule.** From that list, retain only the class with the highest level within each category (XC, XD, and so on).
 5. **Determine the final result.** If the resulting list is empty, return `["X0"]`. Otherwise, return the retained classes.
-
-## Output format
-
-Return a single JSON object with one key, `"assigned_exposure_classes"`.

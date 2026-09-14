@@ -3,8 +3,8 @@
 import os
 import re
 import json
-from openai import OpenAI
-from .llm_calls import get_prompt_template
+from .llm_calls import MODEL, TEMPERATURE, build_client, get_prompt_template
+from .schemas import ExposureClassAssignment
 
 # Define paths
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -86,7 +86,7 @@ def determine_exposure_classes_with_llm(custom_info: str, mapping: dict, standar
     if "error" in mapping:
         return mapping
 
-    client = OpenAI(api_key=api_key)
+    client = build_client(api_key)
    # Normalize the standard input to handle variations like 'EN 206', 'en 206', etc.
     standard_normalized = re.sub(r'\s+', '', standard.lower())
 
@@ -134,21 +134,24 @@ def determine_exposure_classes_with_llm(custom_info: str, mapping: dict, standar
     })
 
     try:
-        # Make the API call
-        response = client.chat.completions.create(
-            model="gpt-4.1-2025-04-14",
+        # Make the API call, constraining the reply to the expected schema.
+        # The shape of the reply no longer needs validating here: the schema is
+        # enforced during decoding, so a successful parse is always a list of
+        # classes under the 'assigned_exposure_classes' key.
+        response = client.chat.completions.parse(
+            model=MODEL,
             messages=messages,
-            temperature=0.1,
-            response_format={"type": "json_object"}
+            temperature=TEMPERATURE,
+            response_format=ExposureClassAssignment
         )
-        
-        result = json.loads(response.choices[0].message.content)
-        
-        # Validate the response from the LLM
-        if "assigned_exposure_classes" not in result or not isinstance(result["assigned_exposure_classes"], list):
-            return {"error": "LLM returned an invalid data format.", "raw_response": result}
-        
-        return result
+
+        message = response.choices[0].message
+        if message.refusal:
+            return {"error": f"The model declined to answer: {message.refusal}"}
+        if message.parsed is None:
+            return {"error": "The model returned no parsable content."}
+
+        return message.parsed.model_dump()
 
     except Exception as e:
         return {"error": f"An API error occurred: {str(e)}"}

@@ -2,8 +2,10 @@ import os
 import json
 import base64
 import fitz  
-from openai import OpenAI
 from typing import List
+
+from .llm_calls import MODEL, TEMPERATURE, build_client
+from .schemas import DrawingAnalysis
 
 def pdf_to_base64_images(pdf_path: str) -> List[str]:
     """Converts each page of a PDF into a base64 encoded image."""
@@ -32,7 +34,7 @@ def analyze_drawing_with_context(api_key: str, drawing_path: str, custom_info: s
     """
     Analyzes a drawing PDF using an LLM, focusing on the user's intended application.
     """
-    client = OpenAI(api_key=api_key)
+    client = build_client(api_key)
     
     prompt_text = get_drawing_analysis_prompt().format(
         custom_info=custom_info or "Not specified. Analyze for general requirements.",
@@ -51,15 +53,20 @@ def analyze_drawing_with_context(api_key: str, drawing_path: str, custom_info: s
         })
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4.1-2025-04-14",
+        response = client.chat.completions.parse(
+            model=MODEL,
             messages=[{"role": "user", "content": messages_content}],
-            temperature=0.1,
-            response_format={"type": "json_object"}
+            temperature=TEMPERATURE,
+            response_format=DrawingAnalysis
         )
-        
-        analysis_result = json.loads(response.choices[0].message.content)
-        return analysis_result
+
+        message = response.choices[0].message
+        if message.refusal:
+            return {"error": f"The model declined to answer: {message.refusal}"}
+        if message.parsed is None:
+            return {"error": "The model returned no parsable content."}
+
+        return message.parsed.model_dump()
 
     except Exception as e:
         return {"error": f"An error occurred during the drawing analysis API call: {e}"}

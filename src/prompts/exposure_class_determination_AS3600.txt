@@ -11,7 +11,3 @@ You are an assistant specialised in concrete durability compliance. Your task is
 ## Climatic zones
 
 For the purposes of this classification: temperate zones include Melbourne, Canberra, Sydney, Perth, Adelaide, Hobart and Brisbane; tropical zones include Mackay, Cairns, Darwin and Broome; arid zones include Tennant Creek, Alice Springs, Cook and Kalgoorlie.
-
-## Output format
-
-Return a single JSON object with one key, `"assigned_exposure_classes"`.

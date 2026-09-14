@@ -29,11 +29,7 @@ The document is the single source of truth. The user-provided context is to be u
 
 Accordingly, do not attempt to match the user's stated requirements. Search instead for the additional requirements that the document itself imposes. For example, if the user indicates exposure to rainfall, look for the specifications given for outdoor applications rather than deriving a class from the user's wording. Do not guess and do not assume: read the document and extract only the requirements that apply.
 
-## Output
-
-Return a single valid JSON object with exactly three keys: `element_specific_reqs`, `drawing_exposure_classes` and `analysis_notes`.
-
-## Example
+## Worked example
 
 Given an intended application of "indoor application", and having found the specification "Formigó Estructural: HA-25 / B / 20 / IIa" in the title block together with any further applicable information, the expected output is:
 

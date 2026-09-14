@@ -6,6 +6,26 @@ from openai import OpenAI
 from openai import AsyncOpenAI
 import asyncio
 
+from .schemas import EPDData
+
+# --- LLM configuration ---------------------------------------------------
+# The model identifier is declared once here and reused by every LLM call in
+# the engine, so that the version used for a given run is unambiguous.
+MODEL = "gpt-4.1-2025-04-14"
+TEMPERATURE = 0.1
+REQUEST_TIMEOUT = 120.0   # seconds
+MAX_RETRIES = 5           # the SDK retries with exponential backoff
+
+
+def build_client(api_key: str) -> OpenAI:
+    """Returns a synchronous OpenAI client with retry and timeout settings."""
+    return OpenAI(api_key=api_key, max_retries=MAX_RETRIES, timeout=REQUEST_TIMEOUT)
+
+
+def build_async_client(api_key: str) -> AsyncOpenAI:
+    """Returns an asynchronous OpenAI client with retry and timeout settings."""
+    return AsyncOpenAI(api_key=api_key, max_retries=MAX_RETRIES, timeout=REQUEST_TIMEOUT)
+
 def get_prompt_template(template_name: str) -> str:
     """Reads a prompt template from the src/prompts directory."""
     prompt_path = os.path.join(os.getcwd(), 'src', 'prompts', f"{template_name}.txt")
@@ -26,7 +46,7 @@ def extract_epd_data(api_key: str, pdf_path: str) -> dict:
     if not api_key:
         return {"error": "API Key is missing. Please provide your API key."}
 
-    client = OpenAI(api_key=api_key)
+    client = build_client(api_key)
 
     # Get the prompt text that will instruct the model
     prompt_text = get_prompt_template("epd_extraction")
@@ -56,17 +76,22 @@ def extract_epd_data(api_key: str, pdf_path: str) -> dict:
             "image_url": {"url": f"data:image/png;base64,{img}"}
         })
         
-    # Make the API call to gpt
+    # Make the API call to gpt, constraining the reply to the EPDData schema
     try:
-        response = client.chat.completions.create(
-            model="gpt-4.1-2025-04-14",
+        response = client.chat.completions.parse(
+            model=MODEL,
             messages=[{"role": "user", "content": messages_content}],
-            temperature=0.1,
-            response_format={"type": "json_object"}
+            temperature=TEMPERATURE,
+            response_format=EPDData
         )
-        
-        extracted_json = json.loads(response.choices[0].message.content)
-        return extracted_json
+
+        message = response.choices[0].message
+        if message.refusal:
+            return {"error": f"The model declined to answer: {message.refusal}"}
+        if message.parsed is None:
+            return {"error": "The model returned no parsable content."}
+
+        return message.parsed.model_dump()
 
     except Exception as e:
         return {"error": f"An error occurred during the API call: {e}"}
@@ -76,7 +101,7 @@ async def extract_epd_data_async(api_key: str, pdf_path: str) -> dict:
     """Asynchronous version of extract_epd_data for parallel processing."""
     
     # Use the asynchronous client
-    client = AsyncOpenAI(api_key=api_key)
+    client = build_async_client(api_key)
 
     prompt_text = get_prompt_template("epd_extraction")
     if prompt_text.startswith("ERROR"):
@@ -102,15 +127,20 @@ async def extract_epd_data_async(api_key: str, pdf_path: str) -> dict:
         
     try:
         # Use 'await' for the API call
-        response = await client.chat.completions.create(
-            model="gpt-4.1-2025-04-14",
+        response = await client.chat.completions.parse(
+            model=MODEL,
             messages=[{"role": "user", "content": messages_content}],
-            temperature=0.1,
-            response_format={"type": "json_object"}
+            temperature=TEMPERATURE,
+            response_format=EPDData
         )
-        
-        extracted_json = json.loads(response.choices[0].message.content)
-        return extracted_json
+
+        message = response.choices[0].message
+        if message.refusal:
+            return {"error": f"The model declined to answer: {message.refusal}"}
+        if message.parsed is None:
+            return {"error": "The model returned no parsable content."}
+
+        return message.parsed.model_dump()
 
     except Exception as e:
         return {"error": f"An error occurred during the async API call: {e}"}
