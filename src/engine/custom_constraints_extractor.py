@@ -8,7 +8,7 @@ def get_prompt() -> str:
     Returns the prompt for extracting custom technical constraints.
     """
     prompt_file_path = os.path.join(os.path.dirname(__file__), '..', 'prompts', 'custom_constraints_extractor.txt')
-    with open(prompt_file_path, 'r') as f:
+    with open(prompt_file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
 

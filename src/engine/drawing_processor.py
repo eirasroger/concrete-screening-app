@@ -25,7 +25,7 @@ def get_drawing_analysis_prompt() -> str:
     """
     
     prompt_file_path = os.path.join(os.path.dirname(__file__), '..', 'prompts', 'drawing_processor.txt')
-    with open(prompt_file_path, 'r') as f:
+    with open(prompt_file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
 def analyze_drawing_with_context(api_key: str, drawing_path: str, custom_info: str, preliminary_classes: List[str]) -> dict:
