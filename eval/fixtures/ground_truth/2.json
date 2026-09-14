@@ -1,0 +1,13 @@
+{
+  "_source_pdf": "2.pdf",
+  "_labelled_by": "Roger Vergés",
+  "_labelled_on": "2025-12-10",
+  "EPD_registration_number": "EPD-IES-0019951:002",
+  "density": 2420,
+  "MPa": 30,
+  "max_aggregate_size": 16,
+  "cement_percentage": 14.0,
+  "water_percentage": 7.0,
+  "calculated_wc": 0.5,
+  "cement_content_kg_m3": 338.8
+}

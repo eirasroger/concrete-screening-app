@@ -25,6 +25,7 @@ class Material(BaseModel):
 class EPDData(BaseModel):
     """Data extracted from an Environmental Product Declaration."""
     EPD_name: Optional[str]
+    EPD_registration_number: Optional[str]
     density: Optional[float]
     MPa: Optional[int]
     max_aggregate_size: Optional[float]

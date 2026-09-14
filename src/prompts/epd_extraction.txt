@@ -10,18 +10,21 @@ You are an assistant specialised in extracting structured data from Environmenta
 
 - `EPD_name` (string): the full commercial product name, usually found in the title of the EPD or in a "Product Name" field. Product names vary considerably in format, for example "CLS Rck37 S4 XC3-XA1 D25 CEM II B-LL 42,5 R CB03 CAM".
 
+- `EPD_registration_number` (string): the registration number assigned by the programme operator, for example "EPD-IES-0015951" or "EPD-IES-0019951:002". It is normally stated on the cover page, alongside the programme operator and the publication date. Include any version suffix that follows a colon. If no registration number is stated, return `null`.
+
 - `density` (number):
   1. Search for a declared average density and use that value. It may also appear in the material composition table as the total, when all materials are expressed in kg.
   2. If no average or single value is given, look for a density range (for example 2200 - 2400 kg/m3) and return its midpoint (in this case, 2300).
-  3. If neither a density nor a total mass is stated, use the default value of 2400 kg/m3.
+  3. If neither a density nor a total mass is stated anywhere in the document, return `null`. Do not assume a value.
 
-- `MPa` (number):
-  1. Search for a strength class in the form "Cxx/yy" (for example "C16/20") and return the second number (`yy`).
-  2. If not found, search for a field named "Characteristic strength at 28 days", or equivalent, and return its value.
-  3. If still not found, check whether a strength value is included in the product name given in the title.
-  4. Return the final value as an integer.
+- `MPa` (number): the characteristic compressive strength measured on a cylinder.
+  1. Search for a strength class in the form "Cxx/yy" (for example "C30/37") and return the first number (`xx`). That is the cylinder strength; the second number is the cube strength and must not be returned.
+  2. Spanish designations state the cylinder strength directly: "HA-30", "HRA-30/F/20/XC3" and "H-35" give 30, 30 and 35 respectively.
+  3. If not found, search for a field named "Characteristic strength at 28 days", or equivalent, and return its value.
+  4. If still not found, check whether a strength value is included in the product name given in the title.
+  5. Return the final value as an integer.
 
-- `max_aggregate_size` (number): the maximum aggregate size in millimetres. Search first for an explicit statement in the text, such as "maximum aggregate size of 31.5 mm". If not found, check the commercial product name for a "D" designation such as "D25", which denotes a maximum size of 25 mm. If neither is available, return `null`.
+- `max_aggregate_size` (number): the maximum aggregate size in millimetres. Search first for an explicit statement in the text, such as "maximum aggregate size of 31.5 mm". If not found, check the commercial product name for a "D" designation such as "D25", which denotes a maximum size of 25 mm. Spanish designations give the maximum aggregate size in the third position: "HA-30/B/20/IIa" and "HRA-30/F/20/XC3" both denote 20 mm. If none of these is available, return `null`.
 
 - `mat_comp` (array of objects):
   1. Locate the material composition table, typically given under a heading such as "Material Content".

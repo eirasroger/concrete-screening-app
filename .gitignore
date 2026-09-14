@@ -19,3 +19,10 @@ data/output/*/*
 .venv/
 venv/
 env/
+# Evaluation EPD PDFs are not redistributed with the repository; their
+# provenance is recorded in eval/fixtures/manifest.json instead.
+eval/fixtures/epds/*
+!eval/fixtures/epds/.gitkeep
+
+# Individual evaluation run records (they embed extracted EPD content)
+eval/results/

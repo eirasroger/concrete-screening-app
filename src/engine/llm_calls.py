@@ -12,7 +12,7 @@ from .schemas import EPDData
 # The model identifier is declared once here and reused by every LLM call in
 # the engine, so that the version used for a given run is unambiguous.
 MODEL = "gpt-4.1-2025-04-14"
-TEMPERATURE = 0.1
+TEMPERATURE = 0.0       # extraction is a reading task, not a generative one
 REQUEST_TIMEOUT = 120.0   # seconds
 MAX_RETRIES = 5           # the SDK retries with exponential backoff
 

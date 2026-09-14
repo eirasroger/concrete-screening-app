@@ -1,0 +1,77 @@
+{
+  "_comment": "Provenance for each EPD in the evaluation set. The PDFs are not committed; this records where each came from so the set can be reconstructed.",
+  "epds": [
+    {
+      "filename": "1.pdf",
+      "product_name": "HORMIGON PREPARADO HRA30/F/20/XC3",
+      "publisher": "PROMOTORA MEDITERRANEA-2",
+      "registration_number": "EPD-IES-0015951",
+      "programme_operator": "EPD International AB",
+      "geographical_scope": "Spain",
+      "published": "2024-08-07",
+      "valid_until": "2029-08-06",
+      "url": "https://www.environdec.com/",
+      "retrieved": ""
+    },
+    {
+      "filename": "2.pdf",
+      "product_name": "ECOPact C30/37 XC3/XS1 16mm",
+      "publisher": "Lafarge (Elliniko / Attika plant)",
+      "registration_number": "EPD-IES-0019951:002",
+      "programme_operator": "EPD International AB",
+      "geographical_scope": "Greece",
+      "published": "2025-03-26",
+      "valid_until": "2030-03-25",
+      "url": "https://www.environdec.com/",
+      "retrieved": ""
+    },
+    {
+      "filename": "3.pdf",
+      "product_name": "HORMIGON PREPARADO H-35",
+      "publisher": "PROMOTORA MEDITERRANEA-2 / Molins Concrete & Aggregates",
+      "registration_number": "EPD-IES-002465",
+      "programme_operator": "EPD International AB",
+      "geographical_scope": "Spain",
+      "published": "2025-04-24",
+      "valid_until": "2030-04-23",
+      "url": "https://www.environdec.com/",
+      "retrieved": ""
+    },
+    {
+      "filename": "4.pdf",
+      "product_name": "GS322AP3 (ESR Wetherill Industry Park)",
+      "publisher": "Gunlake Concrete NSW Pty Ltd",
+      "registration_number": "EPD-IES-0022750:001",
+      "programme_operator": "EPD International AB / EPD Australasia",
+      "geographical_scope": "Australia",
+      "published": "2025-06-02",
+      "valid_until": "2030-06-02",
+      "url": "https://www.epd-australasia.com/",
+      "retrieved": ""
+    },
+    {
+      "filename": "5.pdf",
+      "product_name": "45MPa 19mm 70% Slag & Xypex (rev22), Christchurch",
+      "publisher": "Allied Concrete Ltd",
+      "registration_number": "EPD-IES-0018222",
+      "programme_operator": "EPD International AB / EPD Australasia",
+      "geographical_scope": "New Zealand",
+      "published": "2025-04-02",
+      "valid_until": "2030-04-02",
+      "url": "https://www.epd-australasia.com/",
+      "retrieved": ""
+    },
+    {
+      "filename": "6.pdf",
+      "product_name": "Christchurch Ecrete e20 25MPa 19mm TC2 (Banbury Park Villas)",
+      "publisher": "Allied Concrete Ltd",
+      "registration_number": "EPD-IES-0013568",
+      "programme_operator": "EPD International AB / EPD Australasia",
+      "geographical_scope": "New Zealand",
+      "published": "2024-07-30",
+      "valid_until": "2029-07-30",
+      "url": "https://www.epd-australasia.com/",
+      "retrieved": ""
+    }
+  ]
+}
